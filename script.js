@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
             affiliation: "기계공학과 석사과정 | 국립금오공과대학교", 
             body: "저는 마찰공학(Tribology)과 마찰전기 나노발전기(TENG)를 핵심 연구 분야로 다루고 있습니다. 특히, 금속 유기 구조체(MOFs)의 적용과 인공지능(AI) 기술을 융합하여 에너지 하베스팅 및 표면 공학 분야의 새로운 가능성을 탐구하는 데 집중하고 있습니다.", 
             avatar: "https://i.imgur.com/81BCR6A.png",
-            cv_link: "https://docs.google.com/document/d/1MrrJcx1AyQza365NH_VbZWDxZ9KKSMT5rCL-xOnv7WM/edit?usp=sharing", 
+            cv_link: "#", 
             google_scholar: "#", 
             linkedin: "#" 
         },
@@ -15,7 +15,8 @@ document.addEventListener('DOMContentLoaded', () => {
             { title: "Vertical Contact/Separation Triboelectric Generator Utilizing Surface Characteristics of Metal-Organic Frameworks", authors: "Kyoung-Hwan Kim, Jimin Kong, <strong>Dongwon Seo</strong>, and Jihoon Chung*", journal: "<em>Journal of the Korean Society of Manufacturing Process Engineers (KCI)</em>", year: "2025", link_text: "Link", link_url: "#" }
         ],
         conferences: [
-            { title: "A Study on TENG Performance Optimization", description: "Oral Presentation, KSTLE 2025, Jeju, South Korea" }
+            { title: "Pantograph Structure based Self-powered Force Sensor", description: "SPIE in Los Angeles 2024" },
+            { title: "Optimized Spinning-Wheel Design for Enhanced Electrical Output", description: "KSMPE Fall Conference 2024" }
         ],
         education: [
             { title: "M.S. in Mechanical Engineering", description: "Kumoh National Institute of Technology, 2024 - Present" },
@@ -84,8 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('current-year').textContent = new Date().getFullYear();
         updateAdminUI();
     }
-    
-    // ===== 이 함수의 HTML 구조가 수정되었습니다 =====
+
     function renderProfile(data) {
         const container = document.getElementById('about');
         if(!container || !data) return;
@@ -137,16 +137,17 @@ document.addEventListener('DOMContentLoaded', () => {
             `
         }).join('');
     }
-
+    
+    // ===== 이 함수의 'span' 태그 클래스가 수정되었습니다 =====
     function renderList(containerId, data, sectionName) {
         const container = document.getElementById(containerId);
         if (!container) return;
         if (!Array.isArray(data)) { data = []; }
         container.innerHTML = data.map((item, index) => `
-            <li class="flex items-start gap-2 py-2">
+            <li class="flex items-start gap-4 py-3">
                 <div class="flex-grow">
-                    <span class="text-lg font-bold text-gray-800">${item.title}</span>
-                    <p class="text-sm text-gray-600 mt-1">${item.description}</p>
+                    <span class="font-semibold text-gray-800">${item.title}</span>
+                    <p class="text-gray-500 mt-1">${item.description}</p>
                 </div>
                 <div class="flex items-center gap-2">
                     <button class="admin-only-btn edit-item-btn" data-section="${sectionName}" data-index="${index}">✏️</button>
@@ -295,5 +296,4 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     window.addEventListener('scroll', revealSections);
     revealSections();
-
 });

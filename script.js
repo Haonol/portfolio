@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 description: "Poster Presentation, KICHE 2024 (한국화학공학회), Daejeon, South Korea, 2024년 10월." 
             }
         ],
-        // ===== 바로 아래 'education' 키 이름이 정확해야 합니다 =====
+        // ===== 중요: 바로 아래 'education' 키 이름이 정확해야 합니다 =====
         education: [
             {
                 title: "국립금오공과대학교, 기계공학 석사",

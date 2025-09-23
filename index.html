@@ -15,7 +15,7 @@
     <nav id="navbar" class="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-40">
         <div class="max-w-6xl mx-auto px-4">
             <div class="flex items-center justify-between h-16">
-                <a href="#" id="nav-logo" class="text-xl font-bold text-indigo-600" data-editable="english_name">Dongwon Seo</a>
+                <a href="#" id="nav-logo" class="text-xl font-bold text-indigo-600" data-editable="profile.english_name">Dongwon Seo</a>
                 <div class="hidden md:block">
                     <div id="nav-menu" class="ml-10 flex items-baseline space-x-4">
                         <a href="#about" class="nav-link">소개</a>
@@ -62,6 +62,7 @@
                 <ul id="education-list" class="space-y-4 list-disc list-inside"></ul>
             </div>
         </section>
+
         <section id="awards" class="scroll-mt-20 reveal">
             <h2 class="section-title">
                  <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" /></svg>
@@ -74,15 +75,32 @@
         </section>
     </main>
     
-    <footer class="bg-gray-800 text-white mt-20"></footer>
+    <footer class="bg-gray-800 text-white mt-20">
+        <div class="max-w-6xl mx-auto py-6 px-4 text-center text-sm">
+            <p>&copy; <span id="current-year"></span> <span id="footer-name" data-editable="profile.english_name">Dongwon Seo</span>. All Rights Reserved.</p>
+        </div>
+    </footer>
     
     <button id="admin-fab" class="fixed bottom-8 right-8 z-50 bg-indigo-600 text-white rounded-full p-4 shadow-lg hover:bg-indigo-700 transition-transform hover:scale-110">
         <svg id="edit-icon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.5L15.232 5.232z" /></svg>
         <svg id="save-icon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
     </button>
     
-    <div id="password-modal" class="modal-overlay hidden"></div>
-    <div id="edit-modal" class="modal-overlay hidden"></div>
+    <div id="password-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <h3 class="text-lg font-bold mb-4">관리자 인증</h3>
+            <p class="text-sm mb-4">비밀번호를 입력하세요.</p>
+            <input type="password" id="password-input" class="w-full p-2 border rounded">
+            <div class="mt-6 text-right">
+                <button id="password-cancel" class="px-4 py-2 bg-gray-200 rounded mr-2">취소</button>
+                <button id="password-submit" class="px-4 py-2 bg-indigo-600 text-white rounded">확인</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="edit-modal" class="modal-overlay hidden">
+        <div id="edit-modal-content" class="modal-content"></div>
+    </div>
 
     <script src="script.js"></script>
 </body>

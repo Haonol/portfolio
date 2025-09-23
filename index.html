@@ -8,22 +8,14 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Inter', 'Noto Sans KR', sans-serif; }
-        .section-title { @apply text-3xl font-bold text-gray-800 mb-8 flex items-center gap-3; }
-        .nav-link { @apply px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-indigo-600 hover:text-white transition-all duration-300; }
-        .nav-link.active { @apply bg-indigo-600 text-white; }
-        .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.8s ease-out, transform 0.8s ease-out; }
-        .reveal.active { opacity: 1; transform: translateY(0); }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body class="bg-gray-100 text-gray-700">
 
-    <!-- 네비게이션 바 -->
-    <nav id="navbar" class="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-50 transition-all duration-300">
+    <nav id="navbar" class="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-40">
         <div class="max-w-6xl mx-auto px-4">
             <div class="flex items-center justify-between h-16">
-                <a href="#" id="nav-logo" class="text-xl font-bold text-indigo-600">Dongwon Seo</a>
+                <a href="#" id="nav-logo" class="text-xl font-bold text-indigo-600" data-editable="english_name">Dongwon Seo</a>
                 <div class="hidden md:block">
                     <div id="nav-menu" class="ml-10 flex items-baseline space-x-4">
                         <a href="#about" class="nav-link">소개</a>
@@ -32,224 +24,73 @@
                         <a href="#awards" class="nav-link">수상 및 장학</a>
                     </div>
                 </div>
-                <div class="md:hidden">
-                    <button id="mobile-menu-button" class="p-2 rounded-md text-gray-500 hover:text-white hover:bg-indigo-500 transition-colors">
-                        <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
-                    </button>
-                </div>
             </div>
-        </div>
-        <div id="mobile-menu" class="md:hidden hidden bg-white shadow-lg">
-            <a href="#about" class="block py-3 px-4 text-sm hover:bg-indigo-50">소개</a>
-            <a href="#publications" class="block py-3 px-4 text-sm hover:bg-indigo-50">논문 및 저서</a>
-            <a href="#conferences" class="block py-3 px-4 text-sm hover:bg-indigo-50">학회 활동</a>
-            <a href="#awards" class="block py-3 px-4 text-sm hover:bg-indigo-50">수상 및 장학</a>
         </div>
     </nav>
 
-    <!-- 메인 콘텐츠 -->
     <main class="max-w-6xl mx-auto p-4 md:p-8">
-
-        <!-- 소개 섹션 -->
-        <section id="about" class="mb-20 scroll-mt-20">
-            <!-- 프로필 정보가 여기에 동적으로 채워집니다. -->
-        </section>
-
-        <!-- 논문 및 저서 섹션 -->
+        <section id="about" class="mb-20 scroll-mt-20"></section>
+        
         <section id="publications" class="mb-20 scroll-mt-20 reveal">
             <h2 class="section-title">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
-                논문 및 저서 (Publications)
+                <span>논문 및 저서 (Publications)</span>
+                <button class="admin-only-btn add-item-btn" data-section="publications">+</button>
             </h2>
-            <div id="publications-list" class="space-y-8">
-                <!-- 논문 목록이 여기에 동적으로 채워집니다. -->
-            </div>
+            <div id="publications-list" class="space-y-8"></div>
         </section>
 
-        <!-- 학회 활동 섹션 -->
         <section id="conferences" class="mb-20 scroll-mt-20 reveal">
             <h2 class="section-title">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3> 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
-                학회 활동 (Conferences & Talks)
+                <span>학회 활동 (Conferences & Talks)</span>
+                <button class="admin-only-btn add-item-btn" data-section="conferences">+</button>
             </h2>
-            <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300">
-                <ul id="conferences-list" class="space-y-4 list-disc list-inside">
-                    <!-- 학회 활동 목록이 여기에 동적으로 채워집니다. -->
-                </ul>
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <ul id="conferences-list" class="space-y-4 list-disc list-inside"></ul>
             </div>
         </section>
 
-        <!-- 수상 및 장학 내역 섹션 -->
         <section id="awards" class="scroll-mt-20 reveal">
             <h2 class="section-title">
                  <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" /></svg>
-                수상 및 장학 (Awards & Grants)
+                <span>수상 및 장학 (Awards & Grants)</span>
+                <button class="admin-only-btn add-item-btn" data-section="awards">+</button>
             </h2>
-            <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300">
-                <ul id="awards-list" class="space-y-4 list-disc list-inside">
-                    <!-- 수상 내역 목록이 여기에 동적으로 채워집니다. -->
-                </ul>
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <ul id="awards-list" class="space-y-4 list-disc list-inside"></ul>
             </div>
         </section>
     </main>
     
     <footer class="bg-gray-800 text-white mt-20">
         <div class="max-w-6xl mx-auto py-6 px-4 text-center text-sm">
-            <p>&copy; <span id="current-year"></span> <span id="footer-name"></span>. All Rights Reserved.</p>
+            <p>&copy; <span id="current-year"></span> <span id="footer-name" data-editable="english_name">Dongwon Seo</span>. All Rights Reserved.</p>
         </div>
     </footer>
+    
+    <button id="admin-fab" class="fixed bottom-8 right-8 z-50 bg-indigo-600 text-white rounded-full p-4 shadow-lg hover:bg-indigo-700 transition-transform hover:scale-110">
+        <svg id="edit-icon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.5L15.232 5.232z" /></svg>
+        <svg id="save-icon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+    </button>
+    
+    <div id="password-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <h3 class="text-lg font-bold mb-4">관리자 인증</h3>
+            <p class="text-sm mb-4">비밀번호를 입력하세요.</p>
+            <input type="password" id="password-input" class="w-full p-2 border rounded">
+            <div class="mt-6 text-right">
+                <button id="password-cancel" class="px-4 py-2 bg-gray-200 rounded mr-2">취소</button>
+                <button id="password-submit" class="px-4 py-2 bg-indigo-600 text-white rounded">확인</button>
+            </div>
+        </div>
+    </div>
 
-    <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        // --- 임시 데이터 (CMS 연결 후에는 이 부분이 필요 없습니다) ---
-        const tempProfile = {
-            name: "서동원",
-            english_name: "Dongwon Seo",
-            affiliation: "기계공학과 석사과정 | 국립금오공과대학교",
-            body: "저는 마찰공학(Tribology)과 마찰전기 나노발전기(TENG)를 핵심 연구 분야로 다루고 있습니다. 특히, 금속 유기 구조체(MOFs)의 적용과 인공지능(AI) 기술을 융합하여 에너지 하베스팅 및 표면 공학 분야의 새로운 가능성을 탐구하는 데 집중하고 있습니다.",
-            avatar: "https://placehold.co/200x200/E0E7FF/333333?text=Profile+Pic",
-            cv_link: "#",
-            google_scholar: "#",
-            linkedin: "#"
-        };
+    <div id="edit-modal" class="modal-overlay hidden">
+        <div id="edit-modal-content" class="modal-content">
+             </div>
+    </div>
 
-        const tempPublications = [
-            {
-                title: "Energy Harvesting using Triboelectric Nanogenerators with MOFs",
-                authors: "<strong>서동원</strong>, 김철수",
-                journal: "<em>Journal of Nanotechnology</em>, 15(2), 45-58.",
-                year: "2025",
-                pdf_link: "#",
-                doi_link: "#"
-            },
-            {
-                title: "AI-based Prediction of Material Tribological Properties",
-                authors: "이영희, <strong>서동원</strong>",
-                journal: "<em>Proceedings of the International Conference on Mechanical Engineering (ICME)</em>, Busan, South Korea.",
-                year: "2024",
-                pdf_link: "#"
-            }
-        ];
-
-        const tempConferences = [
-            { title: "A Study on TENG Performance Optimization", description: "Oral Presentation, KSTLE 2025 (한국트라이볼로지학회), Jeju, South Korea, 2025년 4월." },
-            { title: "Introduction to Metal Organic Frameworks", description: "Poster Presentation, KICHE 2024 (한국화학공학회), Daejeon, South Korea, 2024년 10월." }
-        ];
-
-        const tempAwards = [
-            { title: "최우수 포스터상", description: "KSTLE 2025 (한국트라이볼로지학회), 2025년." },
-            { title: "BK21 대학원 혁신지원사업 장학금", description: "국립금오공과대학교, 2024년 - 현재." }
-        ];
-
-        // --- 데이터 렌더링 함수 ---
-        
-        // 프로필 렌더링
-        function renderProfile(data) {
-            const container = document.getElementById('about');
-            const socialLinks = `
-                <a href="${data.google_scholar}" class="text-gray-500 hover:text-indigo-600 transition-colors" title="Google Scholar">
-                    <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24"><path d="M5.242 13.769L0 9.5L12 0l12 9.5-5.242 4.269C17.548 11.249 14.978 9.5 12 9.5c-2.977 0-5.548 1.748-6.758 4.269zM12 10.9c-1.39 0-2.583.52-3.483 1.343l3.483 2.829l3.483-2.829C14.583 11.42 13.39 10.9 12 10.9zm0 3.843L8.517 11.914C9.417 11.09 10.61 10.56 12 10.56s2.583.53 3.483 1.354L12 14.743z" transform="translate(0 5)"></path></svg>
-                </a>
-                <a href="${data.linkedin}" class="text-gray-500 hover:text-indigo-600 transition-colors" title="LinkedIn">
-                     <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"></path></svg>
-                </a>`;
-            container.innerHTML = `
-                <div class="flex flex-col md:flex-row items-center bg-white p-8 rounded-xl shadow-lg">
-                    <div class="md:w-1/3 text-center mb-6 md:mb-0">
-                        <img src="${data.avatar}" alt="프로필 사진" class="rounded-full w-48 h-48 mx-auto object-cover border-4 border-indigo-200 shadow-md">
-                    </div>
-                    <div class="md:w-2/3 md:pl-12">
-                        <h1 class="text-5xl font-bold text-gray-900 mb-2">${data.name}</h1>
-                        <p class="text-xl text-indigo-600 font-semibold mb-5">${data.affiliation}</p>
-                        <p class="mb-6 text-base leading-relaxed">${data.body}</p>
-                        <div class="flex items-center space-x-5">
-                            <a href="${data.cv_link}" class="bg-indigo-600 text-white px-5 py-2 rounded-lg hover:bg-indigo-700 shadow-md hover:shadow-lg transition-all duration-300">CV 다운로드</a>
-                            ${socialLinks}
-                        </div>
-                    </div>
-                </div>`;
-            document.getElementById('nav-logo').textContent = data.english_name;
-            document.getElementById('footer-name').textContent = data.english_name;
-        }
-
-        // 논문 렌더링
-        function renderPublications(data) {
-            const container = document.getElementById('publications-list');
-            container.innerHTML = data.map(item => {
-                const links = [];
-                if (item.pdf_link) links.push(`<a href="${item.pdf_link}" class="text-indigo-500 font-semibold hover:underline">[PDF]</a>`);
-                if (item.doi_link) links.push(`<a href="${item.doi_link}" class="text-indigo-500 font-semibold hover:underline">[DOI]</a>`);
-                if (item.code_link) links.push(`<a href="${item.code_link}" class="text-indigo-500 font-semibold hover:underline">[Code]</a>`);
-                if (item.slides_link) links.push(`<a href="${item.slides_link}" class="text-indigo-500 font-semibold hover:underline">[Slides]</a>`);
-                
-                return `
-                <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-                    <p class="text-lg font-semibold text-gray-800">${item.title}</p>
-                    <p class="text-sm text-gray-600 mb-2">${item.authors}. (${item.year}). ${item.journal}</p>
-                    <div class="flex space-x-4 text-sm mt-3">${links.join('')}</div>
-                </div>`;
-            }).join('');
-        }
-
-        // 학회/수상 렌더링 (리스트 형식)
-        function renderList(containerId, data) {
-            const container = document.getElementById(containerId);
-            container.innerHTML = data.map(item => `
-                <li><span class="font-semibold">"${item.title}"</span>, ${item.description}</li>
-            `).join('');
-        }
-
-        // 임시 데이터로 렌더링 실행
-        renderProfile(tempProfile);
-        renderPublications(tempPublications);
-        renderList('conferences-list', tempConferences);
-        renderList('awards-list', tempAwards);
-
-
-        // --- 기존 UI 스크립트 ---
-        document.getElementById('current-year').textContent = new Date().getFullYear();
-        
-        function revealSections() {
-            const reveals = document.querySelectorAll('.reveal');
-            for (let i = 0; i < reveals.length; i++) {
-                const windowHeight = window.innerHeight;
-                const elementTop = reveals[i].getBoundingClientRect().top;
-                const elementVisible = 150;
-                if (elementTop < windowHeight - elementVisible) {
-                    reveals[i].classList.add('active');
-                } else {
-                    reveals[i].classList.remove('active');
-                }
-            }
-        }
-        window.addEventListener('scroll', revealSections);
-        revealSections();
-
-        const mobileMenuButton = document.getElementById('mobile-menu-button');
-        const mobileMenu = document.getElementById('mobile-menu');
-        mobileMenuButton.addEventListener('click', () => {
-            mobileMenu.classList.toggle('hidden');
-        });
-
-        const sections = document.querySelectorAll('section');
-        const navLinks = document.querySelectorAll('nav a.nav-link');
-        window.addEventListener('scroll', () => {
-            let current = '';
-            sections.forEach(section => {
-                const sectionTop = section.offsetTop;
-                if (pageYOffset >= sectionTop - 80) {
-                    current = section.getAttribute('id');
-                }
-            });
-            navLinks.forEach(link => {
-                link.classList.remove('active');
-                if (link.getAttribute('href').includes(current)) {
-                    link.classList.add('active');
-                }
-            });
-        });
-    });
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
-

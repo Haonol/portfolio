@@ -1,7 +1,7 @@
 {
-  "name": "portfolio-project",
+  "name": "portfolio-project-vercel",
   "version": "1.0.0",
   "dependencies": {
-    "@netlify/blobs": "latest"
+    "@vercel/kv": "latest"
   }
 }

@@ -1,3 +1,6 @@
+body {
+    background-color: red !important;
+}
 @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700&display=swap');
 
 body { 
@@ -229,4 +232,5 @@ body.admin-mode-active .admin-only-feature {
 .publication-link:hover {
     background-color: #4338ca;
     color: white;
+
 }

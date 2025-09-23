@@ -16,6 +16,7 @@ module.exports = async (req, res) => {
     await kv.set('portfolioData', data);
     res.status(200).json({ success: true, message: '데이터가 성공적으로 저장되었습니다.' });
   } catch (error) {
+    console.error("Save-data function error:", error);
     res.status(500).json({ error: '데이터 저장에 실패했습니다.' });
   }
 };

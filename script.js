@@ -84,23 +84,24 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('current-year').textContent = new Date().getFullYear();
         updateAdminUI();
     }
-
+    
+    // ===== 이 함수의 HTML 구조가 수정되었습니다 =====
     function renderProfile(data) {
         const container = document.getElementById('about');
         if(!container || !data) return;
         container.innerHTML = `
-            <div class="flex flex-col md:flex-row items-center gap-8 bg-white p-8 rounded-xl shadow-lg">
-                <div class="md:w-1/3 text-center mb-6 md:mb-0">
-                    <div id="profile-image-wrapper" class="profile-image-wrapper">
+            <div class="flex flex-col md:flex-row items-center justify-center gap-8 bg-white p-8 rounded-xl shadow-lg">
+                <div class="md:w-auto md:flex-shrink-0">
+                    <div id="profile-image-wrapper" class="profile-image-wrapper mx-auto">
                         <img id="profile-avatar" src="${data.avatar}" alt="프로필 사진">
                         <button id="change-photo-btn" class="admin-only-feature">사진 변경</button>
                     </div>
                 </div>
-                <div class="md:w-2/3 md:pl-8">
-                    <h1 class="text-4xl lg:text-5xl font-bold text-gray-900 mb-2" data-editable="profile.name">${data.name}</h1>
-                    <p class="text-xl text-indigo-600 font-semibold mb-5" data-editable="profile.affiliation">${data.affiliation}</p>
+                <div class="md:w-2/3">
+                    <h1 class="text-4xl lg:text-5xl font-bold text-gray-900 mb-2 text-center md:text-left" data-editable="profile.name">${data.name}</h1>
+                    <p class="text-xl text-indigo-600 font-semibold mb-5 text-center md:text-left" data-editable="profile.affiliation">${data.affiliation}</p>
                     <p class="mb-6 text-base leading-relaxed text-gray-600" data-editable="profile.body">${data.body}</p>
-                    <div class="flex items-center space-x-5">
+                    <div class="flex items-center justify-center md:justify-start space-x-5">
                         <a href="${data.cv_link}" class="bg-indigo-600 text-white px-5 py-2 rounded-lg hover:bg-indigo-700 shadow-md transition-all">CV 다운로드</a>
                     </div>
                 </div>
@@ -137,7 +138,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }).join('');
     }
 
-    // ===== 이 함수의 'span' 태그 클래스가 수정되었습니다 =====
     function renderList(containerId, data, sectionName) {
         const container = document.getElementById(containerId);
         if (!container) return;

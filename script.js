@@ -1,5 +1,3 @@
-console.log("--- SCRIPT VERSION FINAL ---");
-
 document.addEventListener('DOMContentLoaded', () => {
     const initialData = {
         profile: { 
@@ -104,7 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <p class="text-xl text-indigo-600 font-semibold mb-5 text-center md:text-left" data-editable="profile.affiliation">${data.affiliation}</p>
                     <p class="mb-6 text-base leading-relaxed text-gray-600" data-editable="profile.body">${data.body}</p>
                     <div class="flex items-center justify-center md:justify-start space-x-5">
-                        <a href="${data.cv_link}" class="bg-indigo-600 text-white px-5 py-2 rounded-lg hover:bg-indigo-700 shadow-md transition-all">CV</a>
+                        <a href="${data.cv_link}" class="bg-indigo-600 text-white px-5 py-2 rounded-lg hover:bg-indigo-700 shadow-md transition-all">CV 다운로드</a>
                     </div>
                 </div>
             </div>`;
@@ -139,8 +137,7 @@ document.addEventListener('DOMContentLoaded', () => {
             `
         }).join('');
     }
-    
-    // ===== 이 함수의 'span' 태그 클래스가 수정되었습니다 =====
+
     function renderList(containerId, data, sectionName) {
         const container = document.getElementById(containerId);
         if (!container) return;
@@ -299,4 +296,3 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('scroll', revealSections);
     revealSections();
 });
-

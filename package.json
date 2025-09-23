@@ -1,6 +1,7 @@
 {
   "name": "portfolio-project",
   "version": "1.0.0",
+  "type": "module",
   "dependencies": {
     "@netlify/blobs": "^7.5.1"
   }

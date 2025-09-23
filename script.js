@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
             affiliation: "기계공학과 석사과정 | 국립금오공과대학교", 
             body: "저는 마찰공학(Tribology)과 마찰전기 나노발전기(TENG)를 핵심 연구 분야로 다루고 있습니다. 특히, 금속 유기 구조체(MOFs)의 적용과 인공지능(AI) 기술을 융합하여 에너지 하베스팅 및 표면 공학 분야의 새로운 가능성을 탐구하는 데 집중하고 있습니다.", 
             avatar: "https://i.imgur.com/81BCR6A.png",
-            cv_link: "#", 
+            cv_link: "https://docs.google.com/document/d/1MrrJcx1AyQza365NH_VbZWDxZ9KKSMT5rCL-xOnv7WM/edit?usp=sharing", 
             google_scholar: "#", 
             linkedin: "#" 
         },
@@ -295,4 +295,5 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     window.addEventListener('scroll', revealSections);
     revealSections();
+
 });

@@ -5,28 +5,14 @@ document.addEventListener('DOMContentLoaded', () => {
             english_name: "Dongwon Seo", 
             affiliation: "기계공학과 석사과정 | 국립금오공과대학교", 
             body: "저는 마찰공학(Tribology)과 마찰전기 나노발전기(TENG)를 핵심 연구 분야로 다루고 있습니다. 특히, 금속 유기 구조체(MOFs)의 적용과 인공지능(AI) 기술을 융합하여 에너지 하베스팅 및 표면 공학 분야의 새로운 가능성을 탐구하는 데 집중하고 있습니다.", 
-            avatar: "https://i.imgur.com/KgP09Ww.jpeg",
+            avatar: "https://i.imgur.com/81BCR6A.png",
             cv_link: "#", 
             google_scholar: "#", 
             linkedin: "#" 
         },
         publications: [
-            { 
-                title: "Scott-Russel linkage-based triboelectric self-powered sensor for contact material-independent force sensing and tactile recognition", 
-                authors: "<strong>Dongwon Seo</strong>, Jimin Kong, and Jihoon Chung*", 
-                journal: "Small (2023 IF: 13.0, JCR Top 10%)", 
-                year: "2024", 
-                link_text: "DOI",
-                link_url: "#"
-            },
-            { 
-                title: "Vertical Contact/Separation Triboelectric Generator Utilizing Surface Characteristics of Metal-Organic Frameworks", 
-                authors: "Kyoung-Hwan Kim, Jimin Kong, <strong>Dongwon Seo</strong>, and Jihoon Chung*", 
-                journal: "<em>Journal of the Korean Society of Manufacturing Process Engineers (KCI)</em>", 
-                year: "2025", 
-                link_text: "Link",
-                link_url: "#"
-            }
+            { title: "Scott-Russel linkage-based triboelectric self-powered sensor for contact material-independent force sensing and tactile recognition", authors: "<strong>Dongwon Seo</strong>, Jimin Kong, and Jihoon Chung*", journal: "<em>Small</em> (2023 IF: 13.0, JCR Top 10%)", year: "2024", link_text: "DOI", link_url: "#" },
+            { title: "Vertical Contact/Separation Triboelectric Generator Utilizing Surface Characteristics of Metal-Organic Frameworks", authors: "Kyoung-Hwan Kim, Jimin Kong, <strong>Dongwon Seo</strong>, and Jihoon Chung*", journal: "<em>Journal of the Korean Society of Manufacturing Process Engineers (KCI)</em>", year: "2025", link_text: "Link", link_url: "#" }
         ],
         conferences: [
             { title: "A Study on TENG Performance Optimization", description: "Oral Presentation, KSTLE 2025, Jeju, South Korea" }
@@ -102,19 +88,35 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderProfile(data) {
         const container = document.getElementById('about');
         if(!container || !data) return;
-        container.innerHTML = `<div class="flex flex-col md:flex-row items-center gap-8 bg-white p-8 rounded-xl shadow-lg"><div class="md:w-1/3 text-center mb-6 md:mb-0"><img src="${data.avatar}" alt="프로필 사진" class="rounded-full w-48 h-48 mx-auto object-cover border-4 border-indigo-200 shadow-md"></div><div class="md:w-2/3 md:pl-8"><h1 class="text-4xl lg:text-5xl font-bold text-gray-900 mb-2" data-editable="profile.name">${data.name}</h1><p class="text-xl text-indigo-600 font-semibold mb-5" data-editable="profile.affiliation">${data.affiliation}</p><p class="mb-6 text-base leading-relaxed text-gray-600" data-editable="profile.body">${data.body}</p><div class="flex items-center space-x-5"><a href="${data.cv_link}" class="bg-indigo-600 text-white px-5 py-2 rounded-lg hover:bg-indigo-700 shadow-md transition-all">CV 다운로드</a></div></div></div>`;
+        container.innerHTML = `
+            <div class="flex flex-col md:flex-row items-center gap-8 bg-white p-8 rounded-xl shadow-lg">
+                <div class="md:w-1/3 text-center mb-6 md:mb-0">
+                    <div class="profile-image-wrapper">
+                        <img id="profile-avatar" src="${data.avatar}" alt="프로필 사진" class="rounded-full w-48 h-48 mx-auto object-cover border-4 border-indigo-200 shadow-md">
+                        <button id="change-photo-btn" class="admin-only-feature">사진 변경</button>
+                    </div>
+                </div>
+                <div class="md:w-2/3 md:pl-8">
+                    <h1 class="text-4xl lg:text-5xl font-bold text-gray-900 mb-2" data-editable="profile.name">${data.name}</h1>
+                    <p class="text-xl text-indigo-600 font-semibold mb-5" data-editable="profile.affiliation">${data.affiliation}</p>
+                    <p class="mb-6 text-base leading-relaxed text-gray-600" data-editable="profile.body">${data.body}</p>
+                    <div class="flex items-center space-x-5">
+                        <a href="${data.cv_link}" class="bg-indigo-600 text-white px-5 py-2 rounded-lg hover:bg-indigo-700 shadow-md transition-all">CV 다운로드</a>
+                    </div>
+                </div>
+            </div>`;
         document.getElementById('nav-logo').innerHTML = data.english_name;
         document.getElementById('footer-name').innerHTML = data.english_name;
     }
 
     function renderPublications(data) {
-        const container = document.getElementById('publications-container'); // ID 변경
+        const container = document.getElementById('publications-container');
         if (!container) return;
         
         container.innerHTML = (data || []).map((item, index) => {
             const styledJournal = item.journal.replace(/<em>(.*?)<\/em>/g, '<span class="journal-name">$1</span>');
             return `
-            <div class="publication-card">
+            <div class="publication-card relative">
                 <div>
                     <p class="publication-title">${item.title}</p>
                     <p class="publication-authors">${item.authors}</p>
@@ -135,7 +137,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }).join('');
     }
 
-
     function renderList(containerId, data, sectionName) {
         const container = document.getElementById(containerId);
         if (!container) return;
@@ -143,13 +144,19 @@ document.addEventListener('DOMContentLoaded', () => {
         container.innerHTML = data.map((item, index) => `<li class="flex items-start gap-2 py-1"><div class="flex-grow"><span class="font-semibold text-gray-800">${item.title}</span><p class="text-sm text-gray-600">${item.description}</p></div><div class="flex items-center gap-2"><button class="admin-only-btn edit-item-btn" data-section="${sectionName}" data-index="${index}">✏️</button><button class="admin-only-btn delete-item-btn" data-section="${sectionName}" data-index="${index}">-</button></div></li>`).join('');
     }
 
-    function enterAdminMode() { adminMode = true; renderAll(); }
-    function exitAdminMode() { adminMode = false; renderAll(); }
+    function enterAdminMode() { 
+        adminMode = true; 
+        document.body.classList.add('admin-mode-active');
+        renderAll(); 
+    }
+    function exitAdminMode() { 
+        adminMode = false; 
+        document.body.classList.remove('admin-mode-active');
+        renderAll();
+    }
     
     function updateAdminUI() {
         document.querySelectorAll('[data-editable]').forEach(el => el.setAttribute('contenteditable', adminMode));
-        const adminElements = document.querySelectorAll('.admin-only-btn, .admin-only-header, .admin-only-cell');
-        adminElements.forEach(el => { el.style.display = adminMode ? 'flex' : 'none'; });
         document.getElementById('edit-icon').classList.toggle('hidden', adminMode);
         document.getElementById('save-icon').classList.toggle('hidden', !adminMode);
     }
@@ -206,14 +213,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.addEventListener('click', (e) => {
         if (!adminMode) return;
-        const target = e.target.closest('button');
-        if (!target) return;
-        if (target.classList.contains('add-item-btn')) { openEditModal(target.dataset.section); }
-        if (target.classList.contains('edit-item-btn')) { openEditModal(target.dataset.section, parseInt(target.dataset.index, 10)); }
-        if (target.classList.contains('delete-item-btn')) {
+        
+        // 사진 변경 버튼 클릭 처리
+        if (e.target.id === 'change-photo-btn') {
+            const newAvatarUrl = prompt("새로운 프로필 사진 이미지 URL을 입력하세요:");
+            if (newAvatarUrl) {
+                siteData.profile.avatar = newAvatarUrl;
+                document.getElementById('profile-avatar').src = newAvatarUrl;
+            }
+        }
+
+        const button = e.target.closest('button');
+        if (!button) return;
+        if (button.classList.contains('add-item-btn')) { openEditModal(button.dataset.section); }
+        if (button.classList.contains('edit-item-btn')) { openEditModal(button.dataset.section, parseInt(button.dataset.index, 10)); }
+        if (button.classList.contains('delete-item-btn')) {
             if (!confirm('정말로 이 항목을 삭제하시겠습니까?')) return;
-            const section = target.dataset.section;
-            const index = parseInt(target.dataset.index, 10);
+            const section = button.dataset.section;
+            const index = parseInt(button.dataset.index, 10);
             siteData[section].splice(index, 1);
             renderAll();
         }
@@ -268,6 +285,4 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     window.addEventListener('scroll', revealSections);
     revealSections();
-
 });
-

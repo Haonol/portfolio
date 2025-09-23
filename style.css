@@ -4,7 +4,7 @@ body {
     font-family: 'Pretendard', 'Inter', 'Noto Sans KR', sans-serif; 
     word-break: keep-all;
     letter-spacing: -0.02em;
-    background-color: #f8fafc; /* Slightly lighter grey background */
+    background-color: #f8fafc;
 }
 .section-title { 
     @apply text-3xl font-bold text-gray-800 mb-8 flex items-center gap-3; 
@@ -33,8 +33,14 @@ body {
 [contenteditable="true"]:focus {
     outline: 2px solid #4338ca;
 }
-.admin-only-btn {
+.admin-only-btn, .admin-only-feature {
     display: none;
+}
+body.admin-mode-active .admin-only-btn,
+body.admin-mode-active .admin-only-feature {
+    display: flex; /* Or inline-flex, block, etc. as needed */
+}
+.admin-only-btn {
     margin-left: 1rem;
     background-color: #4f46e5;
     color: white;
@@ -59,6 +65,32 @@ body {
 .delete-item-btn:hover {
     background-color: #b91c1c;
 }
+
+/* ===== 프로필 사진 수정 버튼 스타일 ===== */
+.profile-image-wrapper {
+    position: relative;
+}
+#change-photo-btn {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0.6);
+    color: white;
+    border: none;
+    border-radius: 9999px;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+.profile-image-wrapper:hover #change-photo-btn {
+    opacity: 1;
+}
+/* ===================================== */
+
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -91,63 +123,62 @@ body {
 .modal-overlay:not(.hidden) .modal-content {
     transform: scale(1);
 }
-
-/* ===== 새로운 Publication Card 스타일 ===== */
 .publication-card {
     background-color: white;
     border: 1px solid #e5e7eb;
-    border-radius: 0.75rem; /* 12px */
-    padding: 1.5rem; /* 24px */
+    border-radius: 0.75rem;
+    padding: 1.5rem;
     transition: all 0.3s ease;
     display: flex;
     flex-direction: column;
-    gap: 0.5rem; /* 8px */
+    gap: 0.5rem;
+    position: relative;
 }
 .publication-card:hover {
-    border-color: #c7d2fe; /* Indigo-200 */
+    border-color: #c7d2fe;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     transform: translateY(-4px);
 }
 .publication-title {
-    font-size: 1.125rem; /* 18px */
+    font-size: 1.125rem;
     font-weight: 600;
-    color: #1f2937; /* Gray-800 */
+    color: #1f2937;
 }
 .publication-authors {
-    font-size: 0.875rem; /* 14px */
-    color: #4b5563; /* Gray-600 */
+    font-size: 0.875rem;
+    color: #4b5563;
 }
 .publication-journal {
-    font-size: 0.875rem; /* 14px */
-    color: #6b7280; /* Gray-500 */
-    margin-top: 0.25rem; /* 4px */
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin-top: 0.25rem;
 }
 .journal-name {
-    color: #4f46e5; /* Indigo-600 */
+    color: #4f46e5;
     font-weight: 500;
 }
 .publication-meta {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-top: 1rem; /* 16px */
+    margin-top: 1rem;
 }
 .publication-year {
-    font-size: 0.875rem; /* 14px */
+    font-size: 0.875rem;
     font-weight: 500;
-    color: #1f2937; /* Gray-800 */
-    background-color: #f3f4f6; /* Gray-100 */
-    padding: 0.25rem 0.75rem; /* 4px 12px */
+    color: #1f2937;
+    background-color: #f3f4f6;
+    padding: 0.25rem 0.75rem;
     border-radius: 9999px;
 }
 .publication-link {
     display: inline-block;
-    padding: 0.25rem 1rem; /* 4px 16px */
+    padding: 0.25rem 1rem;
     border-radius: 9999px;
     background-color: #eef2ff;
     color: #4338ca;
     font-weight: 500;
-    font-size: 0.875rem; /* 14px */
+    font-size: 0.875rem;
     text-decoration: none;
     transition: all 0.2s ease;
 }

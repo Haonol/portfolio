@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // --- 초기 데이터 설정 (서버에 데이터가 없을 때 최초로 사용될 기본값) ---
     const initialData = {
         profile: { 
             name: "서동원", 
@@ -11,16 +12,52 @@ document.addEventListener('DOMContentLoaded', () => {
             linkedin: "#" 
         },
         publications: [
-            { title: "Energy Harvesting using Triboelectric Nanogenerators with MOFs", authors: "<strong>서동원</strong>, 김철수", journal: "<em>Journal of Nanotechnology</em>, 15(2), 45-58.", year: "2025", link_text: "PDF", link_url: "#" }
+            { 
+                title: "Energy Harvesting using Triboelectric Nanogenerators with MOFs", 
+                authors: "<strong>서동원</strong>, 김철수", 
+                journal: "<em>Journal of Nanotechnology</em>, 15(2), 45-58.", 
+                year: "2025", 
+                link_text: "PDF",
+                link_url: "#"
+            }, 
+            { 
+                title: "AI-based Prediction of Material Tribological Properties", 
+                authors: "이영희, <strong>서동원</strong>", 
+                journal: "<em>Proceedings of ICME</em>, Busan, South Korea.", 
+                year: "2024", 
+                link_text: "DOI",
+                link_url: "#"
+            }
         ],
         conferences: [
-            { title: "A Study on TENG Performance Optimization", description: "Oral Presentation, KSTLE 2025 (한국트라이볼로지학회), Jeju, South Korea, 2025년 4월." }
+            { 
+                title: "A Study on TENG Performance Optimization", 
+                description: "Oral Presentation, KSTLE 2025 (한국트라이볼로지학회), Jeju, South Korea, 2025년 4월." 
+            }, 
+            { 
+                title: "Introduction to Metal Organic Frameworks", 
+                description: "Poster Presentation, KICHE 2024 (한국화학공학회), Daejeon, South Korea, 2024년 10월." 
+            }
         ],
         education: [
-            { title: "국립금오공과대학교, 기계공학 석사", description: "2024년 3월 - 현재" }
+            {
+                title: "국립금오공과대학교, 기계공학 석사",
+                description: "2024년 3월 - 현재"
+            },
+            {
+                title: "국립금오공과대학교, 기계공학 학사",
+                description: "GPA: 4.0/4.5 | 2020년 3월 - 2024년 2월"
+            }
         ],
         awards: [
-            { title: "최우수 포스터상", description: "KSTLE 2025 (한국트라이볼로지학회), 2025년." }
+            { 
+                title: "최우수 포스터상", 
+                description: "KSTLE 2025 (한국트라이볼로지학회), 2025년." 
+            }, 
+            { 
+                title: "BK21 대학원 혁신지원사업 장학금", 
+                description: "국립금오공과대학교, 2024년 - 현재." 
+            }
         ]
     };
 
@@ -32,44 +69,46 @@ document.addEventListener('DOMContentLoaded', () => {
     const editModal = document.getElementById('edit-modal');
     const adminFab = document.getElementById('admin-fab');
 
+    // ===== Vercel 서버에서 데이터를 불러오는 함수 =====
     async function loadData() {
         try {
-            const response = await fetch('/.netlify/functions/get-data');
-            if (!response.ok) {
-                throw new Error(`Server responded with ${response.status}`);
-            }
+            const response = await fetch('/api/get-data'); // <-- Vercel 주소
             const dataFromServer = await response.json();
             
-            if (dataFromServer && dataFromServer.profile) {
+            if (dataFromServer) {
                 siteData = dataFromServer;
             } else {
                 siteData = initialData;
             }
         } catch (error) {
-            console.error("Failed to load data from server. Using initial default data.", error);
+            console.error("서버에서 데이터를 불러오는 데 실패했습니다. 초기 데이터를 사용합니다.", error);
             siteData = initialData;
         }
         renderAll();
     }
 
+    // ===== Vercel 서버에 데이터를 저장하는 함수 =====
     async function saveData() {
         const password = prompt("저장을 위해 관리자 비밀번호를 다시 입력하세요:");
         if (!password) {
             alert("저장이 취소되었습니다.");
             return;
         }
+
         document.querySelectorAll('[data-editable]').forEach(el => {
             const keys = el.dataset.editable.split('.');
             let temp = siteData;
             for (let i = 0; i < keys.length - 1; i++) { temp = temp[keys[i]]; }
             temp[keys[keys.length - 1]] = el.innerHTML;
         });
+
         try {
-            const response = await fetch('/.netlify/functions/save-data', {
+            const response = await fetch('/api/save-data', { // <-- Vercel 주소
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ password: password, data: siteData }),
             });
+
             if (response.ok) {
                 alert('성공적으로 저장되었습니다!');
                 exitAdminMode();
@@ -82,6 +121,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // --- 화면 렌더링 관련 함수들 ---
     function renderAll() {
         if (!siteData) return;
         renderProfile(siteData.profile);
@@ -116,6 +156,7 @@ document.addEventListener('DOMContentLoaded', () => {
         container.innerHTML = data.map((item, index) => `<li class="flex items-start gap-2"><span class="flex-grow"><span class="font-semibold">"${item.title}"</span>, ${item.description}</span><div class="flex flex-col gap-2"><button class="admin-only-btn edit-item-btn" data-section="${sectionName}" data-index="${index}">✏️</button><button class="admin-only-btn delete-item-btn" data-section="${sectionName}" data-index="${index}">-</button></div></li>`).join('');
     }
 
+    // --- 관리자 모드 관련 함수들 ---
     function enterAdminMode() { adminMode = true; renderAll(); }
     function exitAdminMode() { adminMode = false; renderAll(); }
     function updateAdminUI() {
@@ -125,12 +166,15 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('edit-icon').classList.toggle('hidden', adminMode);
         document.getElementById('save-icon').classList.toggle('hidden', !adminMode);
     }
+
+    // --- 이벤트 핸들러 (버튼 클릭 등) ---
     adminFab.addEventListener('click', () => {
         if (!adminMode) {
             passwordModal.classList.remove('hidden');
             document.getElementById('password-input').focus();
         } else { saveData(); }
     });
+
     document.getElementById('password-submit').addEventListener('click', async () => {
         const input = document.getElementById('password-input');
         const password = input.value;
@@ -138,7 +182,7 @@ document.addEventListener('DOMContentLoaded', () => {
         button.textContent = '확인 중...';
         button.disabled = true;
         try {
-            const response = await fetch('/.netlify/functions/check-password', {
+            const response = await fetch('/api/check-password', { // <-- Vercel 주소
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ password: password }),
@@ -158,10 +202,12 @@ document.addEventListener('DOMContentLoaded', () => {
             button.disabled = false;
         }
     });
+
     document.getElementById('password-cancel').addEventListener('click', () => {
         passwordModal.classList.add('hidden');
         document.getElementById('password-input').value = '';
     });
+    
     document.addEventListener('click', (e) => {
         if (!adminMode) return;
         const target = e.target.closest('button');
@@ -176,6 +222,7 @@ document.addEventListener('DOMContentLoaded', () => {
             renderAll();
         }
     });
+
     function openEditModal(section, index = null) {
         editIndex = index;
         const isNew = index === null;
@@ -192,6 +239,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('edit-cancel').onclick = () => editModal.classList.add('hidden');
         editModal.classList.remove('hidden');
     }
+
     function saveEdit(section) {
         const isNew = editIndex === null;
         let updatedItem;
@@ -209,7 +257,10 @@ document.addEventListener('DOMContentLoaded', () => {
         editModal.classList.add('hidden');
         renderAll();
     }
+
+    // --- 초기 실행 ---
     loadData();
+
     const reveals = document.querySelectorAll('.reveal');
     function revealSections() {
         reveals.forEach(reveal => {

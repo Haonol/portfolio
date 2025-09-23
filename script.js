@@ -12,12 +12,32 @@ document.addEventListener('DOMContentLoaded', () => {
             linkedin: "#" 
         },
         publications: [
-            // ... 기존 데이터 ...
+            { 
+                title: "Energy Harvesting using Triboelectric Nanogenerators with MOFs", 
+                authors: "<strong>서동원</strong>, 김철수", 
+                journal: "<em>Journal of Nanotechnology</em>, 15(2), 45-58.", 
+                year: "2025", 
+                pdf_link: "#", 
+                doi_link: "#" 
+            }, 
+            { 
+                title: "AI-based Prediction of Material Tribological Properties", 
+                authors: "이영희, <strong>서동원</strong>", 
+                journal: "<em>Proceedings of the International Conference on Mechanical Engineering (ICME)</em>, Busan, South Korea.", 
+                year: "2024", 
+                pdf_link: "#" 
+            }
         ],
         conferences: [
-            // ... 기존 데이터 ...
+            { 
+                title: "A Study on TENG Performance Optimization", 
+                description: "Oral Presentation, KSTLE 2025 (한국트라이볼로지학회), Jeju, South Korea, 2025년 4월." 
+            }, 
+            { 
+                title: "Introduction to Metal Organic Frameworks", 
+                description: "Poster Presentation, KICHE 2024 (한국화학공학회), Daejeon, South Korea, 2024년 10월." 
+            }
         ],
-        // ===== 새로운 학업 데이터 =====
         education: [
             {
                 title: "국립금오공과대학교, 기계공학 석사",
@@ -28,12 +48,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 description: "GPA: 4.0/4.5 | 2020년 3월 - 2024년 2월"
             }
         ],
-        // ==========================
         awards: [
-            // ... 기존 데이터 ...
+            { 
+                title: "최우수 포스터상", 
+                description: "KSTLE 2025 (한국트라이볼로지학회), 2025년." 
+            }, 
+            { 
+                title: "BK21 대학원 혁신지원사업 장학금", 
+                description: "국립금오공과대학교, 2024년 - 현재." 
+            }
         ]
     };
-    // (publications, conferences, awards의 기존 데이터는 생략했습니다. 그대로 유지하시면 됩니다.)
 
     let siteData;
     let adminMode = false;
@@ -60,19 +85,32 @@ document.addEventListener('DOMContentLoaded', () => {
         alert('성공적으로 저장되었습니다!');
     }
 
-    // --- 렌더링 ---
     function renderAll() {
         renderProfile(siteData.profile);
         renderPublications(siteData.publications);
         renderList('conferences-list', siteData.conferences, 'conferences');
-        renderList('education-list', siteData.education, 'education'); // <-- 학업 렌더링 추가
+        renderList('education-list', siteData.education, 'education');
         renderList('awards-list', siteData.awards, 'awards');
         document.getElementById('current-year').textContent = new Date().getFullYear();
         updateAdminUI();
     }
 
     function renderProfile(data) {
-        // ... 변경 없음 ...
+        const container = document.getElementById('about');
+        container.innerHTML = `
+            <div class="flex flex-col md:flex-row items-center bg-white p-8 rounded-xl shadow-lg">
+                <div class="md:w-1/3 text-center mb-6 md:mb-0"><img src="${data.avatar}" alt="프로필 사진" class="rounded-full w-48 h-48 mx-auto object-cover border-4 border-indigo-200 shadow-md"></div>
+                <div class="md:w-2/3 md:pl-12">
+                    <h1 class="text-5xl font-bold text-gray-900 mb-2" data-editable="profile.name">${data.name}</h1>
+                    <p class="text-xl text-indigo-600 font-semibold mb-5" data-editable="profile.affiliation">${data.affiliation}</p>
+                    <p class="mb-6 text-base leading-relaxed" data-editable="profile.body">${data.body}</p>
+                    <div class="flex items-center space-x-5">
+                        <a href="${data.cv_link}" class="bg-indigo-600 text-white px-5 py-2 rounded-lg hover:bg-indigo-700 shadow-md">CV 다운로드</a>
+                    </div>
+                </div>
+            </div>`;
+        document.getElementById('nav-logo').innerHTML = data.english_name;
+        document.getElementById('footer-name').innerHTML = data.english_name;
     }
 
     function renderPublications(data) {
@@ -101,9 +139,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             </li>`).join('');
     }
-    
-    // --- 관리자 모드 및 이벤트 핸들러 ---
-    // ... 이 아래 모든 코드는 변경할 필요가 없습니다 ...
 
     function enterAdminMode() {
         adminMode = true;
@@ -169,7 +204,7 @@ document.addEventListener('DOMContentLoaded', () => {
             button.disabled = false;
         }
     });
-    
+
     document.getElementById('password-cancel').addEventListener('click', () => {
         passwordModal.classList.add('hidden');
         document.getElementById('password-input').value = '';

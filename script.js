@@ -39,7 +39,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 description: "Poster Presentation, KICHE 2024 (한국화학공학회), Daejeon, South Korea, 2024년 10월." 
             }
         ],
-        // ===== 중요: 바로 아래 'education' 키 이름이 정확해야 합니다 =====
         education: [
             {
                 title: "국립금오공과대학교, 기계공학 석사",
@@ -61,6 +60,12 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         ]
     };
+
+    // ===== 디버깅 코드 시작 =====
+    console.log("--- 디버깅 시작: initialData 객체를 확인합니다. ---");
+    console.log(initialData);
+    console.log("--- 'education' 키가 존재하나요? ---", initialData.hasOwnProperty('education'));
+    // ===== 디버깅 코드 끝 =====
 
     let siteData;
     let adminMode = false;
@@ -103,7 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const container = document.getElementById('about');
         container.innerHTML = `
             <div class="flex flex-col md:flex-row items-center bg-white p-8 rounded-xl shadow-lg">
-                <div class="md:w-1/3 text-center mb-6 md:mb-0"><img src="${data.avatar}" alt="프로필 사진" class="rounded-full w-48 h-48 mx-auto object-cover border-4 border-indigo-200 shadow-md"></div>
+                <div class="md:w-1-3 text-center mb-6 md:mb-0"><img src="${data.avatar}" alt="프로필 사진" class="rounded-full w-48 h-48 mx-auto object-cover border-4 border-indigo-200 shadow-md"></div>
                 <div class="md:w-2/3 md:pl-12">
                     <h1 class="text-5xl font-bold text-gray-900 mb-2" data-editable="profile.name">${data.name}</h1>
                     <p class="text-xl text-indigo-600 font-semibold mb-5" data-editable="profile.affiliation">${data.affiliation}</p>
@@ -163,6 +168,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!container) return;
         
         if (!Array.isArray(data)) {
+            // 이 부분이 현재 오류를 발생시키는 지점입니다.
             console.error(`Data for section "${sectionName}" is not an array.`, data);
             data = [];
         }
@@ -175,6 +181,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             </li>`).join('');
     }
+
+    // ... (이 아래 코드는 변경사항 없습니다) ...
 
     function enterAdminMode() {
         adminMode = true;

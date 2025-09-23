@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // --- 초기 데이터 설정 ---
+    // --- 초기 데이터 설정 (서버에 데이터가 없을 때 최초로 사용될 기본값) ---
     const initialData = {
         profile: { 
             name: "서동원", 
@@ -19,24 +19,44 @@ document.addEventListener('DOMContentLoaded', () => {
                 year: "2025", 
                 link_text: "PDF",
                 link_url: "#"
+            }, 
+            { 
+                title: "AI-based Prediction of Material Tribological Properties", 
+                authors: "이영희, <strong>서동원</strong>", 
+                journal: "<em>Proceedings of ICME</em>, Busan, South Korea.", 
+                year: "2024", 
+                link_text: "DOI",
+                link_url: "#"
             }
         ],
         conferences: [
             { 
                 title: "A Study on TENG Performance Optimization", 
                 description: "Oral Presentation, KSTLE 2025 (한국트라이볼로지학회), Jeju, South Korea, 2025년 4월." 
+            }, 
+            { 
+                title: "Introduction to Metal Organic Frameworks", 
+                description: "Poster Presentation, KICHE 2024 (한국화학공학회), Daejeon, South Korea, 2024년 10월." 
             }
         ],
         education: [
             {
                 title: "국립금오공과대학교, 기계공학 석사",
                 description: "2024년 3월 - 현재"
+            },
+            {
+                title: "국립금오공과대학교, 기계공학 학사",
+                description: "GPA: 4.0/4.5 | 2020년 3월 - 2024년 2월"
             }
         ],
         awards: [
             { 
                 title: "최우수 포스터상", 
                 description: "KSTLE 2025 (한국트라이볼로지학회), 2025년." 
+            }, 
+            { 
+                title: "BK21 대학원 혁신지원사업 장학금", 
+                description: "국립금오공과대학교, 2024년 - 현재." 
             }
         ]
     };
@@ -49,27 +69,34 @@ document.addEventListener('DOMContentLoaded', () => {
     const editModal = document.getElementById('edit-modal');
     const adminFab = document.getElementById('admin-fab');
 
-    // ===== 수정된 데이터 로딩 함수 =====
-    function loadData() {
-        const savedDataString = localStorage.getItem('portfolioData');
-        const savedData = savedDataString ? JSON.parse(savedDataString) : null;
-
-        // 저장된 데이터와 초기 데이터를 합쳐서 항상 모든 키가 존재하도록 보장
-        // Object.assign을 사용하여 깊은 복사를 하되, 목록은 초기 데이터 구조를 따름
-        siteData = {
-            ...initialData,
-            ...savedData,
-            profile: { ...initialData.profile, ...(savedData ? savedData.profile : {}) },
-            publications: (savedData && savedData.publications) ? savedData.publications : initialData.publications,
-            conferences: (savedData && savedData.conferences) ? savedData.conferences : initialData.conferences,
-            education: (savedData && savedData.education) ? savedData.education : initialData.education,
-            awards: (savedData && savedData.awards) ? savedData.awards : initialData.awards,
-        };
-        
+    // ===== 서버에서 데이터를 불러오는 함수 =====
+    async function loadData() {
+        try {
+            const response = await fetch('/.netlify/functions/get-data');
+            const dataFromServer = await response.json();
+            
+            // 서버에 데이터가 없으면(최초 실행 시), 초기 데이터를 사용
+            if (dataFromServer) {
+                siteData = dataFromServer;
+            } else {
+                siteData = initialData;
+            }
+        } catch (error) {
+            console.error("서버에서 데이터를 불러오는 데 실패했습니다. 초기 데이터를 사용합니다.", error);
+            siteData = initialData;
+        }
         renderAll();
     }
 
-    function saveData() {
+    // ===== 서버에 데이터를 저장하는 함수 =====
+    async function saveData() {
+        const password = prompt("저장을 위해 관리자 비밀번호를 다시 입력하세요:");
+        if (!password) {
+            alert("저장이 취소되었습니다.");
+            return;
+        }
+
+        // 1. 현재 화면의 contenteditable 내용들을 siteData 객체에 반영
         document.querySelectorAll('[data-editable]').forEach(el => {
             const keys = el.dataset.editable.split('.');
             let temp = siteData;
@@ -78,11 +105,30 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             temp[keys[keys.length - 1]] = el.innerHTML;
         });
-        localStorage.setItem('portfolioData', JSON.stringify(siteData));
-        alert('성공적으로 저장되었습니다!');
+
+        // 2. 완성된 siteData를 서버에 전송
+        try {
+            const response = await fetch('/.netlify/functions/save-data', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ password: password, data: siteData }),
+            });
+
+            if (response.ok) {
+                alert('성공적으로 저장되었습니다!');
+                exitAdminMode();
+            } else {
+                const errorResult = await response.text();
+                throw new Error(errorResult || '비밀번호가 틀렸거나 서버 오류가 발생했습니다.');
+            }
+        } catch (error) {
+            alert(`저장에 실패했습니다: ${error.message}`);
+        }
     }
 
+    // --- 화면 렌더링 관련 함수들 ---
     function renderAll() {
+        if (!siteData) return;
         renderProfile(siteData.profile);
         renderPublications(siteData.publications);
         renderList('conferences-list', siteData.conferences, 'conferences');
@@ -168,6 +214,7 @@ document.addEventListener('DOMContentLoaded', () => {
             </li>`).join('');
     }
 
+    // --- 관리자 모드 관련 함수들 ---
     function enterAdminMode() {
         adminMode = true;
         renderAll();
@@ -190,13 +237,13 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('save-icon').classList.toggle('hidden', !adminMode);
     }
 
+    // --- 이벤트 핸들러 (버튼 클릭 등) ---
     adminFab.addEventListener('click', () => {
         if (!adminMode) {
             passwordModal.classList.remove('hidden');
             document.getElementById('password-input').focus();
         } else {
             saveData();
-            exitAdminMode();
         }
     });
 
@@ -261,7 +308,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-
     function openEditModal(section, index = null) {
         editIndex = index;
         const isNew = index === null;
@@ -319,6 +365,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (isNew) {
+            // siteData[section]이 배열이 아니면 초기화
+            if (!Array.isArray(siteData[section])) {
+                siteData[section] = [];
+            }
             siteData[section].push(updatedItem);
         } else {
             siteData[section][editIndex] = updatedItem;
@@ -328,6 +378,7 @@ document.addEventListener('DOMContentLoaded', () => {
         renderAll();
     }
 
+    // --- 초기 실행 ---
     loadData();
 
     const reveals = document.querySelectorAll('.reveal');

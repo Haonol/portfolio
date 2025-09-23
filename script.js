@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // --- 초기 데이터 설정 ---
     const initialData = {
         profile: { 
             name: "서동원", 
@@ -11,15 +12,13 @@ document.addEventListener('DOMContentLoaded', () => {
             linkedin: "#" 
         },
         publications: [
-            { title: "Energy Harvesting using Triboelectric Nanogenerators with MOFs", authors: "<strong>Dongwon Seo</strong>, Cheolsu Kim", journal: "<em>Journal of Nanotechnology</em>, 15(2), 45-58.", year: "2025 (exp.)", link_text: "PDF", link_url: "#" },
-            { title: "AI-based Prediction of Material Tribological Properties", authors: "Younghee Lee, <strong>Dongwon Seo</strong>", journal: "<em>Proceedings of ICME 2024</em>, Busan, South Korea.", year: "2024", link_text: "DOI", link_url: "#" }
+            { title: "Energy Harvesting using Triboelectric Nanogenerators with MOFs", authors: "<strong>Dongwon Seo</strong>, Cheolsu Kim", journal: "<em>Journal of Nanotechnology</em>, 15(2), 45-58.", year: "2025 (exp.)", link_text: "PDF", link_url: "#" }
         ],
         conferences: [
             { title: "A Study on TENG Performance Optimization", description: "Oral Presentation, KSTLE 2025, Jeju, South Korea" }
         ],
         education: [
-            { title: "M.S. in Mechanical Engineering", description: "Kumoh National Institute of Technology, 2024 - Present" },
-            { title: "B.S. in Mechanical Engineering", description: "Kumoh National Institute of Technology, 2020 - 2024" }
+            { title: "M.S. in Mechanical Engineering", description: "Kumoh National Institute of Technology, 2024 - Present" }
         ],
         awards: [
             { title: "Best Poster Award", description: "The Korean Society of Tribologists and Lubrication Engineers (KSTLE), 2025" }
@@ -29,6 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let siteData;
     let adminMode = false;
     let editIndex = null;
+    let passwordPurpose = 'login'; 
 
     const passwordModal = document.getElementById('password-modal');
     const editModal = document.getElementById('edit-modal');
@@ -47,27 +47,26 @@ document.addEventListener('DOMContentLoaded', () => {
         renderAll();
     }
 
-    async function saveData() {
-        const password = prompt("저장을 위해 관리자 비밀번호를 다시 입력하세요:");
-        if (!password) { alert("저장이 취소되었습니다."); return; }
+    async function performSave(password) {
         document.querySelectorAll('[data-editable]').forEach(el => {
             const keys = el.dataset.editable.split('.');
             let temp = siteData;
             for (let i = 0; i < keys.length - 1; i++) { temp = temp[keys[i]]; }
             temp[keys[keys.length - 1]] = el.innerHTML;
         });
+
         try {
             const response = await fetch('/api/save-data', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ password, data: siteData }),
             });
+            const result = await response.json();
             if (response.ok) {
                 alert('성공적으로 저장되었습니다!');
                 exitAdminMode();
             } else {
-                const errorResult = await response.json();
-                throw new Error(errorResult.error || '비밀번호가 틀렸거나 서버 오류가 발생했습니다.');
+                throw new Error(result.error || '알 수 없는 서버 오류가 발생했습니다.');
             }
         } catch (error) {
             alert(`저장에 실패했습니다: ${error.message}`);
@@ -82,7 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
         renderList('education-list', siteData.education, 'education');
         renderList('awards-list', siteData.awards, 'awards');
         document.getElementById('current-year').textContent = new Date().getFullYear();
-        updateAdminUI(); // 이 함수가 이제 존재합니다.
+        updateAdminUI();
     }
 
     function renderProfile(data) {
@@ -121,9 +120,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     adminFab.addEventListener('click', () => {
         if (!adminMode) {
+            passwordPurpose = 'login';
             passwordModal.classList.remove('hidden');
             document.getElementById('password-input').focus();
-        } else { saveData(); }
+        } else { 
+            passwordPurpose = 'save';
+            passwordModal.classList.remove('hidden');
+            document.getElementById('password-input').focus();
+        }
     });
 
     document.getElementById('password-submit').addEventListener('click', async () => {
@@ -132,31 +136,36 @@ document.addEventListener('DOMContentLoaded', () => {
         const button = document.getElementById('password-submit');
         button.textContent = '확인 중...';
         button.disabled = true;
+
         try {
-            const response = await fetch('/api/check-password', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ password: password }),
-            });
-            const result = await response.json();
-            if (response.ok && result.success) {
-                passwordModal.classList.add('hidden');
-                input.value = '';
-                enterAdminMode();
-            } else {
-                alert(result.message || '인증에 실패했습니다.');
+            if (passwordPurpose === 'login') {
+                const response = await fetch('/api/check-password', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ password }),
+                });
+                const result = await response.json();
+                if (response.ok && result.success) {
+                    enterAdminMode();
+                } else {
+                    alert(result.message || '인증에 실패했습니다.');
+                }
+            } else if (passwordPurpose === 'save') {
+                await performSave(password);
             }
         } catch (error) {
-            alert('서버와 통신 중 오류가 발생했습니다.');
+            alert(`오류가 발생했습니다: ${error.message}`);
         } finally {
+            input.value = '';
+            passwordModal.classList.add('hidden');
             button.textContent = '확인';
             button.disabled = false;
         }
     });
 
     document.getElementById('password-cancel').addEventListener('click', () => {
-        passwordModal.classList.add('hidden');
         document.getElementById('password-input').value = '';
+        passwordModal.classList.add('hidden');
     });
 
     document.addEventListener('click', (e) => {

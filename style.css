@@ -66,28 +66,50 @@ body.admin-mode-active .admin-only-feature {
     background-color: #b91c1c;
 }
 
-/* ===== 프로필 사진 스타일 수정 ===== */
+/* ===== 프로필 섹션 전체 스타일 변경 ===== */
+#about {
+    margin-bottom: 5rem; /* 섹션 하단 여백 추가 */
+}
+#about .flex-col.md\:flex-row {
+    background-color: white;
+    padding: 2.5rem; /* 전체 패딩 증가 */
+    border-radius: 1.5rem; /* 더 둥근 모서리 */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08); /* 더 깊은 그림자 */
+    align-items: center; /* 세로 중앙 정렬 */
+    gap: 3rem; /* 간격 증가 */
+}
+
+/* ===== 프로필 사진 스타일 변경 ===== */
 .profile-image-wrapper {
     position: relative;
-    /* 추가: 원형 클리핑을 위한 설정 */
-    border-radius: 50%; /* 원형으로 자름 */
-    overflow: hidden;   /* 넘치는 부분 숨김 */
-    width: 192px;       /* 이미지 크기 고정 (w-48, h-48에 해당) */
-    height: 192px;
-    display: flex;      /* 이미지를 중앙에 정렬하기 위함 */
+    border-radius: 50%;
+    overflow: hidden;
+    width: 220px; /* 원형 컨테이너 크기 증가 (대략 25% 증가) */
+    height: 220px;
+    display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #e2e8f0; /* 배경색 추가 (만약 이미지가 작을 경우) */
+    background-color: #f0f4f8; /* 밝은 배경색 */
+    box-shadow: 0 0 0 8px rgba(255, 255, 255, 0.8), /* 안쪽 테두리처럼 보이는 하얀 그림자 */
+                0 0 0 10px #a78bfa, /* 바깥쪽 보라색 테두리 */
+                0 15px 30px rgba(0, 0, 0, 0.2); /* 입체감 있는 그림자 */
+    transition: all 0.3s ease;
 }
+.profile-image-wrapper:hover {
+    transform: translateY(-5px); /* 호버 시 약간 위로 뜨는 효과 */
+    box-shadow: 0 0 0 8px rgba(255, 255, 255, 0.8),
+                0 0 0 10px #8b5cf6, /* 호버 시 보라색 테두리 진하게 */
+                0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
 #profile-avatar {
-    /* 기존: rounded-full w-48 h-48 mx-auto object-cover border-4 border-indigo-200 shadow-md */
-    border-radius: 0; /* 테두리 제거 */
-    width: 100%;      /* 부모 wrapper에 맞춰 꽉 채움 */
+    width: 100%;
     height: 100%;
-    object-fit: contain; /* 이미지 비율을 유지하면서 잘리지 않게 */
-    display: block;   /* 이미지 하단 여백 제거 */
-    border: none;     /* 테두리 제거 */
-    box-shadow: none; /* 그림자 제거 */
+    object-fit: contain; /* 이미지가 잘리지 않게 */
+    display: block;
+    border: none;
+    box-shadow: none;
+    background-color: white; /* 이미지가 투명할 경우를 대비 */
 }
 
 #change-photo-btn {
@@ -95,20 +117,21 @@ body.admin-mode-active .admin-only-feature {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-color: rgba(0, 0, 0, 0.6);
+    background-color: rgba(0, 0, 0, 0.7); /* 배경을 더 어둡게 */
     color: white;
     border: none;
     border-radius: 9999px;
-    padding: 8px 16px;
-    font-size: 14px;
-    font-weight: 500;
+    padding: 10px 20px; /* 버튼 크기 증가 */
+    font-size: 15px; /* 글씨 크기 증가 */
+    font-weight: 600; /* 글씨 굵게 */
     cursor: pointer;
     opacity: 0;
-    transition: opacity 0.3s ease;
-    z-index: 10; /* 버튼이 이미지 위에 오도록 */
+    transition: opacity 0.3s ease, background-color 0.3s ease;
+    z-index: 10;
 }
 .profile-image-wrapper:hover #change-photo-btn {
     opacity: 1;
+    background-color: rgba(99, 102, 241, 0.8); /* 호버 시 버튼 색상 변경 */
 }
 /* ===================================== */
 

@@ -1,110 +1,226 @@
-<!DOCTYPE html>
-<html lang="ko" class="scroll-smooth">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>서동원 | 연구 포트폴리오</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css"> 
-</head>
-<body class="bg-gray-100 text-gray-700">
+document.addEventListener('DOMContentLoaded', () => {
+    const initialData = {
+        profile: { 
+            name: "서동원", 
+            english_name: "Dongwon Seo", 
+            affiliation: "기계공학과 석사과정 | 국립금오공과대학교", 
+            body: "저는 마찰공학(Tribology)과 마찰전기 나노발전기(TENG)를 핵심 연구 분야로 다루고 있습니다. 특히, 금속 유기 구조체(MOFs)의 적용과 인공지능(AI) 기술을 융합하여 에너지 하베스팅 및 표면 공학 분야의 새로운 가능성을 탐구하는 데 집중하고 있습니다.", 
+            avatar: "https://i.imgur.com/81BCR6A.png",
+            cv_link: "#", 
+            google_scholar: "#", 
+            linkedin: "#" 
+        },
+        publications: [
+            { title: "Energy Harvesting using Triboelectric Nanogenerators with MOFs", authors: "<strong>Dongwon Seo</strong>, Cheolsu Kim", journal: "<em>Journal of Nanotechnology</em>, 15(2), 45-58.", year: "2025 (exp.)", link_text: "PDF", link_url: "#" },
+            { title: "AI-based Prediction of Material Tribological Properties", authors: "Younghee Lee, <strong>Dongwon Seo</strong>", journal: "<em>Proceedings of ICME 2024</em>, Busan, South Korea.", year: "2024", link_text: "DOI", link_url: "#" }
+        ],
+        conferences: [
+            { title: "A Study on TENG Performance Optimization", description: "Oral Presentation, KSTLE 2025, Jeju, South Korea" }
+        ],
+        education: [
+            { title: "M.S. in Mechanical Engineering", description: "Kumoh National Institute of Technology, 2024 - Present" },
+            { title: "B.S. in Mechanical Engineering", description: "Kumoh National Institute of Technology, 2020 - 2024" }
+        ],
+        awards: [
+            { title: "Best Poster Award", description: "The Korean Society of Tribologists and Lubrication Engineers (KSTLE), 2025" }
+        ]
+    };
 
-    <nav id="navbar" class="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-40">
-        <div class="max-w-6xl mx-auto px-4">
-            <div class="flex items-center justify-between h-16">
-                <a href="#" id="nav-logo" class="text-xl font-bold text-indigo-600" data-editable="profile.english_name">Dongwon Seo</a>
-                <div class="hidden md:block">
-                    <div id="nav-menu" class="ml-10 flex items-baseline space-x-4">
-                        <a href="#about" class="nav-link">소개</a>
-                        <a href="#publications" class="nav-link">논문 및 저서</a>
-                        <a href="#conferences" class="nav-link">학회 활동</a>
-                        <a href="#education" class="nav-link">학업</a>
-                        <a href="#awards" class="nav-link">수상 및 장학</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </nav>
+    let siteData;
+    let adminMode = false;
+    let editIndex = null;
 
-    <main class="max-w-6xl mx-auto p-4 md:p-8">
-        <section id="about" class="mb-20 scroll-mt-20"></section>
-        
-        <section id="publications" class="mb-20 scroll-mt-20 reveal">
-            <h2 class="section-title">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
-                <span>논문 및 저서 (Publications)</span>
-                <button class="admin-only-btn add-item-btn" data-section="publications">+</button>
-            </h2>
-            <div class="bg-white rounded-lg shadow-md overflow-x-auto">
-                <table id="publications-table" class="w-full text-sm text-left">
-                    </table>
-            </div>
-        </section>
+    const passwordModal = document.getElementById('password-modal');
+    const editModal = document.getElementById('edit-modal');
+    const adminFab = document.getElementById('admin-fab');
 
-        <section id="conferences" class="mb-20 scroll-mt-20 reveal">
-            <h2 class="section-title">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></svg>
-                <span>학회 활동 (Conferences & Talks)</span>
-                <button class="admin-only-btn add-item-btn" data-section="conferences">+</button>
-            </h2>
-            <div class="bg-white p-6 rounded-lg shadow-md">
-                <ul id="conferences-list" class="space-y-4 list-disc list-inside"></ul>
-            </div>
-        </section>
+    async function loadData() {
+        try {
+            const response = await fetch('/api/get-data');
+            if (!response.ok) { throw new Error(`Server responded with ${response.status}`); }
+            const dataFromServer = await response.json();
+            siteData = (dataFromServer && dataFromServer.profile) ? dataFromServer : initialData;
+        } catch (error) {
+            console.error("Failed to load data from server. Using initial default data.", error);
+            siteData = initialData;
+        }
+        renderAll();
+    }
 
-        <section id="education" class="mb-20 scroll-mt-20 reveal">
-            <h2 class="section-title">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M12 14l9-5-9-5-9 5 9 5z" /><path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" /><path stroke-linecap="round" stroke-linejoin="round" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222 4 2.222V20M1 12v7a2 2 0 002 2h14a2 2 0 002-2v-7" /></svg>
-                <span>학업 (Education)</span>
-                <button class="admin-only-btn add-item-btn" data-section="education">+</button>
-            </h2>
-            <div class="bg-white p-6 rounded-lg shadow-md">
-                <ul id="education-list" class="space-y-4 list-disc list-inside"></ul>
-            </div>
-        </section>
+    async function saveData() {
+        const password = prompt("저장을 위해 관리자 비밀번호를 다시 입력하세요:");
+        if (!password) { alert("저장이 취소되었습니다."); return; }
+        document.querySelectorAll('[data-editable]').forEach(el => {
+            const keys = el.dataset.editable.split('.');
+            let temp = siteData;
+            for (let i = 0; i < keys.length - 1; i++) { temp = temp[keys[i]]; }
+            temp[keys[keys.length - 1]] = el.innerHTML;
+        });
+        try {
+            const response = await fetch('/api/save-data', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ password, data: siteData }),
+            });
+            if (response.ok) {
+                alert('성공적으로 저장되었습니다!');
+                exitAdminMode();
+            } else {
+                const errorResult = await response.json();
+                throw new Error(errorResult.error || '비밀번호가 틀렸거나 서버 오류가 발생했습니다.');
+            }
+        } catch (error) {
+            alert(`저장에 실패했습니다: ${error.message}`);
+        }
+    }
 
-        <section id="awards" class="scroll-mt-20 reveal">
-            <h2 class="section-title">
-                 <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" /></svg>
-                <span>수상 및 장학 (Awards & Grants)</span>
-                <button class="admin-only-btn add-item-btn" data-section="awards">+</button>
-            </h2>
-            <div class="bg-white p-6 rounded-lg shadow-md">
-                <ul id="awards-list" class="space-y-4 list-disc list-inside"></ul>
-            </div>
-        </section>
-    </main>
+    function renderAll() {
+        if (!siteData) return;
+        renderProfile(siteData.profile);
+        renderPublications(siteData.publications);
+        renderList('conferences-list', siteData.conferences, 'conferences');
+        renderList('education-list', siteData.education, 'education');
+        renderList('awards-list', siteData.awards, 'awards');
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+        updateAdminUI(); // 이 함수가 이제 존재합니다.
+    }
+
+    function renderProfile(data) {
+        const container = document.getElementById('about');
+        if(!container || !data) return;
+        container.innerHTML = `<div class="flex flex-col md:flex-row items-center gap-8 bg-white p-8 rounded-xl shadow-lg"><div class="md:w-1/3 text-center mb-6 md:mb-0"><img src="${data.avatar}" alt="프로필 사진" class="rounded-full w-48 h-48 mx-auto object-cover border-4 border-indigo-200 shadow-md"></div><div class="md:w-2/3 md:pl-8"><h1 class="text-4xl lg:text-5xl font-bold text-gray-900 mb-2" data-editable="profile.name">${data.name}</h1><p class="text-xl text-indigo-600 font-semibold mb-5" data-editable="profile.affiliation">${data.affiliation}</p><p class="mb-6 text-base leading-relaxed text-gray-600" data-editable="profile.body">${data.body}</p><div class="flex items-center space-x-5"><a href="${data.cv_link}" class="bg-indigo-600 text-white px-5 py-2 rounded-lg hover:bg-indigo-700 shadow-md transition-all">CV 다운로드</a></div></div></div>`;
+        document.getElementById('nav-logo').innerHTML = data.english_name;
+        document.getElementById('footer-name').innerHTML = data.english_name;
+    }
+
+    function renderPublications(data) {
+        const table = document.getElementById('publications-table');
+        if (!table) return;
+        const thead = `<thead><tr><th scope="col">Year</th><th scope="col">Publication Details</th><th scope="col">Link</th><th scope="col" class="admin-only-header" style="display: none;">Admin</th></tr></thead>`;
+        const tbody = `<tbody>${(data || []).map((item, index) => {const styledJournal = item.journal.replace(/<em>(.*?)<\/em>/g, '<span class="journal-name">$1</span>'); return `<tr><td class="align-top text-gray-500 w-24">${item.year}</td><td class="align-top"><p class="font-semibold text-gray-800">${item.title}</p><p class="text-sm text-gray-600">${item.authors}</p><p class="text-sm text-gray-500 mt-1">${styledJournal}</p></td><td class="align-top w-28 text-center">${item.link_url && item.link_text ? `<a href="${item.link_url}" target="_blank" rel="noopener noreferrer" class="publication-link">${item.link_text}</a>` : ''}</td><td class="align-top admin-only-cell w-24" style="display: none;"><div class="flex items-center gap-2"><button class="admin-only-btn edit-item-btn" data-section="publications" data-index="${index}">✏️</button><button class="admin-only-btn delete-item-btn" data-section="publications" data-index="${index}">-</button></div></td></tr>`}).join('')}</tbody>`;
+        table.innerHTML = thead + tbody;
+    }
+
+    function renderList(containerId, data, sectionName) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+        if (!Array.isArray(data)) { data = []; }
+        container.innerHTML = data.map((item, index) => `<li class="flex items-start gap-2 py-1"><div class="flex-grow"><span class="font-semibold text-gray-800">${item.title}</span><p class="text-sm text-gray-600">${item.description}</p></div><div class="flex items-center gap-2"><button class="admin-only-btn edit-item-btn" data-section="${sectionName}" data-index="${index}">✏️</button><button class="admin-only-btn delete-item-btn" data-section="${sectionName}" data-index="${index}">-</button></div></li>`).join('');
+    }
+
+    function enterAdminMode() { adminMode = true; renderAll(); }
+    function exitAdminMode() { adminMode = false; renderAll(); }
     
-    <footer class="bg-gray-800 text-white mt-20">
-        <div class="max-w-6xl mx-auto py-6 px-4 text-center text-sm">
-            <p>&copy; <span id="current-year"></span> <span id="footer-name" data-editable="profile.english_name">Dongwon Seo</span>. All Rights Reserved.</p>
-        </div>
-    </footer>
-    
-    <button id="admin-fab" class="fixed bottom-8 right-8 z-50 bg-indigo-600 text-white rounded-full p-4 shadow-lg hover:bg-indigo-700 transition-transform hover:scale-110">
-        <svg id="edit-icon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.5L15.232 5.232z" /></svg>
-        <svg id="save-icon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
-    </button>
-    
-    <div id="password-modal" class="modal-overlay hidden">
-        <div class="modal-content">
-            <h3 class="text-lg font-bold mb-4">관리자 인증</h3>
-            <p class="text-sm mb-4">비밀번호를 입력하세요.</p>
-            <input type="password" id="password-input" class="w-full p-2 border rounded">
-            <div class="mt-6 text-right">
-                <button id="password-cancel" class="px-4 py-2 bg-gray-200 rounded mr-2">취소</button>
-                <button id="password-submit" class="px-4 py-2 bg-indigo-600 text-white rounded">확인</button>
-            </div>
-        </div>
-    </div>
+    function updateAdminUI() {
+        document.querySelectorAll('[data-editable]').forEach(el => el.setAttribute('contenteditable', adminMode));
+        const adminElements = document.querySelectorAll('.admin-only-btn, .admin-only-header, .admin-only-cell');
+        adminElements.forEach(el => { el.style.display = adminMode ? 'flex' : 'none'; });
+        document.getElementById('edit-icon').classList.toggle('hidden', adminMode);
+        document.getElementById('save-icon').classList.toggle('hidden', !adminMode);
+    }
 
-    <div id="edit-modal" class="modal-overlay hidden">
-        <div id="edit-modal-content" class="modal-content"></div>
-    </div>
+    adminFab.addEventListener('click', () => {
+        if (!adminMode) {
+            passwordModal.classList.remove('hidden');
+            document.getElementById('password-input').focus();
+        } else { saveData(); }
+    });
 
-    <script src="script.js"></script>
-</body>
-</html>
+    document.getElementById('password-submit').addEventListener('click', async () => {
+        const input = document.getElementById('password-input');
+        const password = input.value;
+        const button = document.getElementById('password-submit');
+        button.textContent = '확인 중...';
+        button.disabled = true;
+        try {
+            const response = await fetch('/api/check-password', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ password: password }),
+            });
+            const result = await response.json();
+            if (response.ok && result.success) {
+                passwordModal.classList.add('hidden');
+                input.value = '';
+                enterAdminMode();
+            } else {
+                alert(result.message || '인증에 실패했습니다.');
+            }
+        } catch (error) {
+            alert('서버와 통신 중 오류가 발생했습니다.');
+        } finally {
+            button.textContent = '확인';
+            button.disabled = false;
+        }
+    });
+
+    document.getElementById('password-cancel').addEventListener('click', () => {
+        passwordModal.classList.add('hidden');
+        document.getElementById('password-input').value = '';
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!adminMode) return;
+        const target = e.target.closest('button');
+        if (!target) return;
+        if (target.classList.contains('add-item-btn')) { openEditModal(target.dataset.section); }
+        if (target.classList.contains('edit-item-btn')) { openEditModal(target.dataset.section, parseInt(target.dataset.index, 10)); }
+        if (target.classList.contains('delete-item-btn')) {
+            if (!confirm('정말로 이 항목을 삭제하시겠습니까?')) return;
+            const section = target.dataset.section;
+            const index = parseInt(target.dataset.index, 10);
+            siteData[section].splice(index, 1);
+            renderAll();
+        }
+    });
+
+    function openEditModal(section, index = null) {
+        editIndex = index;
+        const isNew = index === null;
+        const item = isNew ? {} : siteData[section][index];
+        const modalContent = document.getElementById('edit-modal-content');
+        let fieldsHtml = '';
+        if (section === 'publications') {
+            fieldsHtml = `<label class="font-semibold">Year</label><input type="text" id="edit-year" class="w-full p-2 border rounded" value="${item.year || ''}"><label class="font-semibold">Title</label><input type="text" id="edit-title" class="w-full p-2 border rounded" value="${item.title || ''}"><label class="font-semibold">Authors</label><input type="text" id="edit-authors" class="w-full p-2 border rounded" value="${item.authors || ''}"><label class="font-semibold">Journal / Conference</label><textarea id="edit-journal" class="w-full p-2 border rounded h-20">${item.journal || ''}</textarea><label class="font-semibold">Link Text</label><input type="text" id="edit-link-text" class="w-full p-2 border rounded" value="${item.link_text || ''}"><label class="font-semibold">Link URL</label><input type="text" id="edit-link-url" class="w-full p-2 border rounded" value="${item.link_url || ''}">`;
+        } else {
+            fieldsHtml = `<label class="font-semibold">Title</label><input type="text" id="edit-title" class="w-full p-2 border rounded" value="${item.title || ''}"><label class="font-semibold">Description</label><textarea id="edit-description" class="w-full p-2 border rounded h-24">${item.description || ''}</textarea>`;
+        }
+        modalContent.innerHTML = `<h3 class="text-lg font-bold mb-4">${isNew ? '항목 추가' : '항목 수정'}</h3><div class="space-y-4 edit-form">${fieldsHtml}</div><div class="mt-6 text-right"><button id="edit-cancel" class="px-4 py-2 bg-gray-200 rounded mr-2">취소</button><button id="edit-save" class="px-4 py-2 bg-indigo-600 text-white rounded">저장</button></div>`;
+        document.getElementById('edit-save').onclick = () => saveEdit(section);
+        document.getElementById('edit-cancel').onclick = () => editModal.classList.add('hidden');
+        editModal.classList.remove('hidden');
+    }
+    
+    function saveEdit(section) {
+        const isNew = editIndex === null;
+        let updatedItem;
+        if (section === 'publications') {
+            updatedItem = { title: document.getElementById('edit-title').value, authors: document.getElementById('edit-authors').value, journal: document.getElementById('edit-journal').value, year: document.getElementById('edit-year').value, link_text: document.getElementById('edit-link-text').value, link_url: document.getElementById('edit-link-url').value };
+        } else {
+             updatedItem = { title: document.getElementById('edit-title').value, description: document.getElementById('edit-description').value };
+        }
+        if (isNew) {
+            if (!Array.isArray(siteData[section])) { siteData[section] = []; }
+            siteData[section].push(updatedItem);
+        } else {
+            siteData[section][editIndex] = updatedItem;
+        }
+        editModal.classList.add('hidden');
+        renderAll();
+    }
+
+    loadData();
+
+    const reveals = document.querySelectorAll('.reveal');
+    function revealSections() {
+        reveals.forEach(reveal => {
+            const windowHeight = window.innerHeight;
+            const elementTop = reveal.getBoundingClientRect().top;
+            if (elementTop < windowHeight - 150) {
+                reveal.classList.add('active');
+            }
+        });
+    }
+    window.addEventListener('scroll', revealSections);
+    revealSections();
+});

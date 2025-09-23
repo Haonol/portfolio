@@ -1,3 +1,5 @@
+console.log("--- SCRIPT VERSION FINAL ---");
+
 document.addEventListener('DOMContentLoaded', () => {
     const initialData = {
         profile: { 
@@ -297,3 +299,4 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('scroll', revealSections);
     revealSections();
 });
+

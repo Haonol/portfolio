@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // --- 초기 데이터 설정 (서버에 데이터가 없을 때 최초로 사용될 기본값) ---
     const initialData = {
         profile: { 
             name: "서동원", 
@@ -12,8 +11,22 @@ document.addEventListener('DOMContentLoaded', () => {
             linkedin: "#" 
         },
         publications: [
-            { title: "Energy Harvesting using Triboelectric Nanogenerators with MOFs", authors: "<strong>Dongwon Seo</strong>, Cheolsu Kim", journal: "<em>Journal of Nanotechnology</em>, 15(2), 45-58.", year: "2025 (exp.)", link_text: "PDF", link_url: "#" },
-            { title: "AI-based Prediction of Material Tribological Properties", authors: "Younghee Lee, <strong>Dongwon Seo</strong>", journal: "<em>Proceedings of ICME 2024</em>, Busan, South Korea.", year: "2024", link_text: "DOI", link_url: "#" }
+            { 
+                title: "Scott-Russel linkage-based triboelectric self-powered sensor for contact material-independent force sensing and tactile recognition", 
+                authors: "<strong>Dongwon Seo</strong>, Jimin Kong, and Jihoon Chung*", 
+                journal: "Small (2023 IF: 13.0, JCR Top 10%)", 
+                year: "2024", 
+                link_text: "DOI",
+                link_url: "#"
+            },
+            { 
+                title: "Vertical Contact/Separation Triboelectric Generator Utilizing Surface Characteristics of Metal-Organic Frameworks", 
+                authors: "Kyoung-Hwan Kim, Jimin Kong, <strong>Dongwon Seo</strong>, and Jihoon Chung*", 
+                journal: "<em>Journal of the Korean Society of Manufacturing Process Engineers (KCI)</em>", 
+                year: "2025", 
+                link_text: "Link",
+                link_url: "#"
+            }
         ],
         conferences: [
             { title: "A Study on TENG Performance Optimization", description: "Oral Presentation, KSTLE 2025, Jeju, South Korea" }
@@ -65,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             const result = await response.json();
             if (response.ok) {
-                alert('성공적으로 저장되었습니다!');
+                alert(result.message || '성공적으로 저장되었습니다!');
                 exitAdminMode();
             } else {
                 throw new Error(result.error || '알 수 없는 서버 오류가 발생했습니다.');
@@ -95,12 +108,33 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function renderPublications(data) {
-        const table = document.getElementById('publications-table');
-        if (!table) return;
-        const thead = `<thead><tr><th scope="col">Year</th><th scope="col">Publication Details</th><th scope="col">Link</th><th scope="col" class="admin-only-header" style="display: none;">Admin</th></tr></thead>`;
-        const tbody = `<tbody>${(data || []).map((item, index) => {const styledJournal = item.journal.replace(/<em>(.*?)<\/em>/g, '<span class="journal-name">$1</span>'); return `<tr><td class="align-top text-gray-500 w-24">${item.year}</td><td class="align-top"><p class="font-semibold text-gray-800">${item.title}</p><p class="text-sm text-gray-600">${item.authors}</p><p class="text-sm text-gray-500 mt-1">${styledJournal}</p></td><td class="align-top w-28 text-center">${item.link_url && item.link_text ? `<a href="${item.link_url}" target="_blank" rel="noopener noreferrer" class="publication-link">${item.link_text}</a>` : ''}</td><td class="align-top admin-only-cell w-24" style="display: none;"><div class="flex items-center gap-2"><button class="admin-only-btn edit-item-btn" data-section="publications" data-index="${index}">✏️</button><button class="admin-only-btn delete-item-btn" data-section="publications" data-index="${index}">-</button></div></td></tr>`}).join('')}</tbody>`;
-        table.innerHTML = thead + tbody;
+        const container = document.getElementById('publications-container'); // ID 변경
+        if (!container) return;
+        
+        container.innerHTML = (data || []).map((item, index) => {
+            const styledJournal = item.journal.replace(/<em>(.*?)<\/em>/g, '<span class="journal-name">$1</span>');
+            return `
+            <div class="publication-card">
+                <div>
+                    <p class="publication-title">${item.title}</p>
+                    <p class="publication-authors">${item.authors}</p>
+                    <p class="publication-journal">${styledJournal}</p>
+                </div>
+                <div class="publication-meta">
+                    <span class="publication-year">${item.year}</span>
+                    <div>
+                        ${item.link_url && item.link_text ? `<a href="${item.link_url}" target="_blank" rel="noopener noreferrer" class="publication-link">${item.link_text}</a>` : ''}
+                    </div>
+                </div>
+                <div class="absolute top-4 right-4 flex gap-2">
+                     <button class="admin-only-btn edit-item-btn" data-section="publications" data-index="${index}">✏️</button>
+                     <button class="admin-only-btn delete-item-btn" data-section="publications" data-index="${index}">-</button>
+                </div>
+            </div>
+            `
+        }).join('');
     }
+
 
     function renderList(containerId, data, sectionName) {
         const container = document.getElementById(containerId);
@@ -154,8 +188,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             } else if (passwordPurpose === 'save') {
                 await performSave(password);
-                // performSave 함수가 성공하면 그 안에서 exitAdminMode를 호출할 수 있습니다.
-                // 여기서는 비밀번호 확인 후 저장 로직을 실행하는 역할만 합니다.
             }
         } catch (error) {
             alert(`오류가 발생했습니다: ${error.message}`);

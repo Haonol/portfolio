@@ -1,8 +1,20 @@
-body { 
-    font-family: 'Inter', 'Noto Sans KR', sans-serif; 
-}
+@import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700&display=swap');
 
-/* 스크롤 애니메이션을 위한 기본 스타일 */
+body { 
+    font-family: 'Pretendard', 'Inter', 'Noto Sans KR', sans-serif; 
+    word-break: keep-all;
+    letter-spacing: -0.02em;
+    background-color: #f8fafc; /* Slightly lighter grey background */
+}
+.section-title { 
+    @apply text-3xl font-bold text-gray-800 mb-8 flex items-center gap-3; 
+}
+.nav-link { 
+    @apply px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:bg-indigo-50 hover:text-indigo-600 transition-all duration-300; 
+}
+.nav-link.active { 
+    @apply bg-indigo-600 text-white hover:bg-indigo-600 hover:text-white; 
+}
 .reveal { 
     opacity: 0; 
     transform: translateY(30px); 
@@ -12,23 +24,134 @@ body {
     opacity: 1; 
     transform: translateY(0); 
 }
-
-/* 네비게이션 링크 스타일 */
-.nav-link { 
-    @apply px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-indigo-600 hover:text-white transition-all duration-300; 
-}
-.nav-link.active { 
-    @apply bg-indigo-600 text-white; 
-}
-
-/* 관리자 모드: 편집 가능한 영역 스타일 */
 [contenteditable="true"] {
-    outline: 2px dashed #4f46e5; /* 편집 중일 때 파란색 점선 테두리 */
+    outline: 2px dashed #4f46e5;
     padding: 2px;
-    background-color: #eef2ff; /* 연한 파란색 배경 */
+    background-color: #eef2ff;
     border-radius: 4px;
 }
-
 [contenteditable="true"]:focus {
-    outline: 2px solid #4338ca; /* 포커스 시 진한 파란색 실선 */
+    outline: 2px solid #4338ca;
+}
+.admin-only-btn {
+    display: none;
+    margin-left: 1rem;
+    background-color: #4f46e5;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+    align-items: center;
+    justify-content: center;
+}
+.admin-only-btn:hover {
+    background-color: #4338ca;
+    transform: scale(1.1);
+}
+.delete-item-btn {
+    background-color: #dc2626;
+}
+.delete-item-btn:hover {
+    background-color: #b91c1c;
+}
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+.modal-overlay:not(.hidden) {
+    opacity: 1;
+    pointer-events: auto;
+}
+.modal-content {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    width: 90%;
+    max-width: 500px;
+    transform: scale(0.95);
+    transition: transform 0.3s ease;
+}
+.modal-overlay:not(.hidden) .modal-content {
+    transform: scale(1);
+}
+
+/* ===== 새로운 Publication Card 스타일 ===== */
+.publication-card {
+    background-color: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.75rem; /* 12px */
+    padding: 1.5rem; /* 24px */
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem; /* 8px */
+}
+.publication-card:hover {
+    border-color: #c7d2fe; /* Indigo-200 */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transform: translateY(-4px);
+}
+.publication-title {
+    font-size: 1.125rem; /* 18px */
+    font-weight: 600;
+    color: #1f2937; /* Gray-800 */
+}
+.publication-authors {
+    font-size: 0.875rem; /* 14px */
+    color: #4b5563; /* Gray-600 */
+}
+.publication-journal {
+    font-size: 0.875rem; /* 14px */
+    color: #6b7280; /* Gray-500 */
+    margin-top: 0.25rem; /* 4px */
+}
+.journal-name {
+    color: #4f46e5; /* Indigo-600 */
+    font-weight: 500;
+}
+.publication-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1rem; /* 16px */
+}
+.publication-year {
+    font-size: 0.875rem; /* 14px */
+    font-weight: 500;
+    color: #1f2937; /* Gray-800 */
+    background-color: #f3f4f6; /* Gray-100 */
+    padding: 0.25rem 0.75rem; /* 4px 12px */
+    border-radius: 9999px;
+}
+.publication-link {
+    display: inline-block;
+    padding: 0.25rem 1rem; /* 4px 16px */
+    border-radius: 9999px;
+    background-color: #eef2ff;
+    color: #4338ca;
+    font-weight: 500;
+    font-size: 0.875rem; /* 14px */
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+.publication-link:hover {
+    background-color: #4338ca;
+    color: white;
 }

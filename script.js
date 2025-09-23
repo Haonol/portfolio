@@ -53,14 +53,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let siteData;
     let adminMode = false;
-    let editIndex = null; // 수정 중인 항목의 인덱스
+    let editIndex = null;
 
-    // --- 모달 요소 ---
     const passwordModal = document.getElementById('password-modal');
     const editModal = document.getElementById('edit-modal');
     const adminFab = document.getElementById('admin-fab');
 
-    // --- 데이터 관리 ---
     function loadData() {
         const savedData = localStorage.getItem('portfolioData');
         siteData = savedData ? JSON.parse(savedData) : JSON.parse(JSON.stringify(initialData));
@@ -68,7 +66,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function saveData() {
-        // contenteditable 요소들 데이터 업데이트
         document.querySelectorAll('[data-editable]').forEach(el => {
             const keys = el.dataset.editable.split('.');
             let temp = siteData;
@@ -79,7 +76,6 @@ document.addEventListener('DOMContentLoaded', () => {
         alert('성공적으로 저장되었습니다!');
     }
 
-    // --- 렌더링 ---
     function renderAll() {
         renderProfile(siteData.profile);
         renderPublications(siteData.publications);
@@ -110,11 +106,12 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderPublications(data) {
         const container = document.getElementById('publications-list');
         container.innerHTML = data.map((item, index) => `
-            <div class="bg-white p-6 rounded-lg shadow-md flex items-start gap-4">
+            <div class="bg-white p-6 rounded-lg shadow-md flex items-start gap-2">
                 <div class="flex-grow">
                     <p class="text-lg font-semibold text-gray-800">${item.title}</p>
                     <p class="text-sm text-gray-600 mb-2">${item.authors}. (${item.year}). ${item.journal}</p>
                 </div>
+                <button class="admin-only-btn edit-item-btn" data-section="publications" data-index="${index}">✏️</button>
                 <button class="admin-only-btn delete-item-btn" data-section="publications" data-index="${index}">-</button>
             </div>`).join('');
     }
@@ -122,13 +119,13 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderList(containerId, data, sectionName) {
         const container = document.getElementById(containerId);
         container.innerHTML = data.map((item, index) => `
-            <li class="flex items-start gap-4">
+            <li class="flex items-start gap-2">
                 <span class="flex-grow"><span class="font-semibold">"${item.title}"</span>, ${item.description}</span>
+                <button class="admin-only-btn edit-item-btn" data-section="${sectionName}" data-index="${index}">✏️</button>
                 <button class="admin-only-btn delete-item-btn" data-section="${sectionName}" data-index="${index}">-</button>
             </li>`).join('');
     }
 
-    // --- 관리자 모드 ---
     function enterAdminMode() {
         adminMode = true;
         renderAll();
@@ -141,16 +138,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function updateAdminUI() {
         document.querySelectorAll('[data-editable]').forEach(el => el.setAttribute('contenteditable', adminMode));
-        document.querySelectorAll('.admin-only-btn').forEach(btn => btn.style.display = adminMode ? 'inline-block' : 'none');
+        document.querySelectorAll('.admin-only-btn').forEach(btn => btn.style.display = adminMode ? 'inline-flex' : 'none');
         document.getElementById('edit-icon').classList.toggle('hidden', adminMode);
         document.getElementById('save-icon').classList.toggle('hidden', !adminMode);
+
         if (adminMode) {
-            document.querySelectorAll('.delete-item-btn').forEach(btn => btn.addEventListener('click', handleDeleteItem));
             document.querySelectorAll('.add-item-btn').forEach(btn => btn.addEventListener('click', handleAddItem));
+            document.querySelectorAll('.edit-item-btn').forEach(btn => btn.addEventListener('click', handleEditItem));
+            document.querySelectorAll('.delete-item-btn').forEach(btn => btn.addEventListener('click', handleDeleteItem));
         }
     }
 
-    // --- 이벤트 핸들러 ---
     adminFab.addEventListener('click', () => {
         if (!adminMode) {
             passwordModal.classList.remove('hidden');
@@ -166,26 +164,21 @@ document.addEventListener('DOMContentLoaded', () => {
         const password = input.value;
         const button = document.getElementById('password-submit');
 
-        // 로딩 상태 표시
         button.textContent = '확인 중...';
         button.disabled = true;
 
         try {
-            // Netlify 서버 함수에 비밀번호 확인 요청
             const response = await fetch('/.netlify/functions/check-password', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ password: password }),
             });
-
             const result = await response.json();
 
             if (response.ok && result.success) {
                 passwordModal.classList.add('hidden');
                 input.value = '';
-                enterAdminMode(); // 인증 성공 시 관리자 모드 진입
+                enterAdminMode();
             } else {
                 alert(result.message || '인증에 실패했습니다.');
             }
@@ -193,7 +186,6 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('인증 요청 중 오류 발생:', error);
             alert('서버와 통신 중 오류가 발생했습니다.');
         } finally {
-            // 버튼 상태 복원
             button.textContent = '확인';
             button.disabled = false;
         }
@@ -206,8 +198,13 @@ document.addEventListener('DOMContentLoaded', () => {
     
     function handleAddItem(e) {
         const section = e.target.dataset.section;
-        editIndex = null; // null은 '추가'를 의미
-        openEditModal(section);
+        openEditModal(section); // index 없이 호출하면 '추가' 모드
+    }
+    
+    function handleEditItem(e) {
+        const section = e.target.dataset.section;
+        const index = parseInt(e.target.dataset.index, 10);
+        openEditModal(section, index); // index와 함께 호출하면 '수정' 모드
     }
 
     function handleDeleteItem(e) {
@@ -218,7 +215,6 @@ document.addEventListener('DOMContentLoaded', () => {
         renderAll();
     }
 
-    // --- 항목 편집 모달 로직 ---
     function openEditModal(section, index = null) {
         editIndex = index;
         const isNew = index === null;
@@ -228,15 +224,15 @@ document.addEventListener('DOMContentLoaded', () => {
         let fieldsHtml = '';
         if (section === 'publications') {
             fieldsHtml = `
-                <label>Title</label><input type="text" id="edit-title" value="${item.title || ''}">
-                <label>Authors</label><input type="text" id="edit-authors" value="${item.authors || ''}">
-                <label>Journal</label><input type="text" id="edit-journal" value="${item.journal || ''}">
-                <label>Year</label><input type="text" id="edit-year" value="${item.year || ''}">
+                <label>Title</label><input type="text" id="edit-title" class="w-full p-2 border rounded" value="${item.title || ''}">
+                <label>Authors</label><input type="text" id="edit-authors" class="w-full p-2 border rounded" value="${item.authors || ''}">
+                <label>Journal</label><input type="text" id="edit-journal" class="w-full p-2 border rounded" value="${item.journal || ''}">
+                <label>Year</label><input type="text" id="edit-year" class="w-full p-2 border rounded" value="${item.year || ''}">
             `;
-        } else { // conferences & awards
+        } else {
             fieldsHtml = `
-                <label>Title</label><input type="text" id="edit-title" value="${item.title || ''}">
-                <label>Description</label><textarea id="edit-description">${item.description || ''}</textarea>
+                <label>Title</label><input type="text" id="edit-title" class="w-full p-2 border rounded" value="${item.title || ''}">
+                <label>Description</label><textarea id="edit-description" class="w-full p-2 border rounded h-24">${item.description || ''}</textarea>
             `;
         }
 
@@ -256,36 +252,35 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function saveEdit(section) {
         const isNew = editIndex === null;
-        let newItem;
+        let updatedItem;
         if (section === 'publications') {
-            newItem = {
+            updatedItem = {
                 title: document.getElementById('edit-title').value,
                 authors: document.getElementById('edit-authors').value,
                 journal: document.getElementById('edit-journal').value,
                 year: document.getElementById('edit-year').value,
-                pdf_link: "#", doi_link: "#" // 링크는 기본값으로
+                pdf_link: (isNew ? "#" : siteData[section][editIndex].pdf_link), // 기존 링크 유지
+                doi_link: (isNew ? "#" : siteData[section][editIndex].doi_link)  // 기존 링크 유지
             };
         } else {
-             newItem = {
+             updatedItem = {
                 title: document.getElementById('edit-title').value,
                 description: document.getElementById('edit-description').value
             };
         }
 
         if (isNew) {
-            siteData[section].push(newItem);
+            siteData[section].push(updatedItem);
         } else {
-            siteData[section][editIndex] = newItem;
+            siteData[section][editIndex] = updatedItem;
         }
 
         editModal.classList.add('hidden');
         renderAll();
     }
 
-    // --- 초기화 및 기타 UI 스크립트 ---
     loadData();
 
-    // 스크롤 애니메이션
     const reveals = document.querySelectorAll('.reveal');
     function revealSections() {
         reveals.forEach(reveal => {

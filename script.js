@@ -1,6 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
     // --- 초기 데이터 설정 ---
-    // (이 부분은 사용자의 원래 데이터를 그대로 유지합니다.)
     const initialData = {
         profile: { 
             name: "서동원", 
@@ -13,43 +12,28 @@ document.addEventListener('DOMContentLoaded', () => {
             linkedin: "#" 
         },
         publications: [
-            { 
-                title: "Energy Harvesting using Triboelectric Nanogenerators with MOFs", 
-                authors: "<strong>서동원</strong>, 김철수", 
-                journal: "<em>Journal of Nanotechnology</em>, 15(2), 45-58.", 
-                year: "2025", 
-                pdf_link: "#", 
-                doi_link: "#" 
-            }, 
-            { 
-                title: "AI-based Prediction of Material Tribological Properties", 
-                authors: "이영희, <strong>서동원</strong>", 
-                journal: "<em>Proceedings of the International Conference on Mechanical Engineering (ICME)</em>, Busan, South Korea.", 
-                year: "2024", 
-                pdf_link: "#" 
-            }
+            // ... 기존 데이터 ...
         ],
         conferences: [
-            { 
-                title: "A Study on TENG Performance Optimization", 
-                description: "Oral Presentation, KSTLE 2025 (한국트라이볼로지학회), Jeju, South Korea, 2025년 4월." 
-            }, 
-            { 
-                title: "Introduction to Metal Organic Frameworks", 
-                description: "Poster Presentation, KICHE 2024 (한국화학공학회), Daejeon, South Korea, 2024년 10월." 
+            // ... 기존 데이터 ...
+        ],
+        // ===== 새로운 학업 데이터 =====
+        education: [
+            {
+                title: "국립금오공과대학교, 기계공학 석사",
+                description: "2024년 3월 - 현재"
+            },
+            {
+                title: "국립금오공과대학교, 기계공학 학사",
+                description: "GPA: 4.0/4.5 | 2020년 3월 - 2024년 2월"
             }
         ],
+        // ==========================
         awards: [
-            { 
-                title: "최우수 포스터상", 
-                description: "KSTLE 2025 (한국트라이볼로지학회), 2025년." 
-            }, 
-            { 
-                title: "BK21 대학원 혁신지원사업 장학금", 
-                description: "국립금오공과대학교, 2024년 - 현재." 
-            }
+            // ... 기존 데이터 ...
         ]
     };
+    // (publications, conferences, awards의 기존 데이터는 생략했습니다. 그대로 유지하시면 됩니다.)
 
     let siteData;
     let adminMode = false;
@@ -76,43 +60,33 @@ document.addEventListener('DOMContentLoaded', () => {
         alert('성공적으로 저장되었습니다!');
     }
 
+    // --- 렌더링 ---
     function renderAll() {
         renderProfile(siteData.profile);
         renderPublications(siteData.publications);
         renderList('conferences-list', siteData.conferences, 'conferences');
+        renderList('education-list', siteData.education, 'education'); // <-- 학업 렌더링 추가
         renderList('awards-list', siteData.awards, 'awards');
         document.getElementById('current-year').textContent = new Date().getFullYear();
         updateAdminUI();
     }
 
     function renderProfile(data) {
-        const container = document.getElementById('about');
-        container.innerHTML = `
-            <div class="flex flex-col md:flex-row items-center bg-white p-8 rounded-xl shadow-lg">
-                <div class="md:w-1/3 text-center mb-6 md:mb-0"><img src="${data.avatar}" alt="프로필 사진" class="rounded-full w-48 h-48 mx-auto object-cover border-4 border-indigo-200 shadow-md"></div>
-                <div class="md:w-2/3 md:pl-12">
-                    <h1 class="text-5xl font-bold text-gray-900 mb-2" data-editable="profile.name">${data.name}</h1>
-                    <p class="text-xl text-indigo-600 font-semibold mb-5" data-editable="profile.affiliation">${data.affiliation}</p>
-                    <p class="mb-6 text-base leading-relaxed" data-editable="profile.body">${data.body}</p>
-                    <div class="flex items-center space-x-5">
-                        <a href="${data.cv_link}" class="bg-indigo-600 text-white px-5 py-2 rounded-lg hover:bg-indigo-700 shadow-md">CV 다운로드</a>
-                    </div>
-                </div>
-            </div>`;
-        document.getElementById('nav-logo').textContent = data.english_name;
-        document.getElementById('footer-name').textContent = data.english_name;
+        // ... 변경 없음 ...
     }
 
     function renderPublications(data) {
         const container = document.getElementById('publications-list');
         container.innerHTML = data.map((item, index) => `
-            <div class="bg-white p-6 rounded-lg shadow-md flex items-start gap-2">
+            <div class="bg-white p-6 rounded-lg shadow-md flex items-center gap-2">
                 <div class="flex-grow">
                     <p class="text-lg font-semibold text-gray-800">${item.title}</p>
                     <p class="text-sm text-gray-600 mb-2">${item.authors}. (${item.year}). ${item.journal}</p>
                 </div>
-                <button class="admin-only-btn edit-item-btn" data-section="publications" data-index="${index}">✏️</button>
-                <button class="admin-only-btn delete-item-btn" data-section="publications" data-index="${index}">-</button>
+                <div class="flex flex-col gap-2">
+                    <button class="admin-only-btn edit-item-btn" data-section="publications" data-index="${index}">✏️</button>
+                    <button class="admin-only-btn delete-item-btn" data-section="publications" data-index="${index}">-</button>
+                </div>
             </div>`).join('');
     }
 
@@ -121,10 +95,15 @@ document.addEventListener('DOMContentLoaded', () => {
         container.innerHTML = data.map((item, index) => `
             <li class="flex items-start gap-2">
                 <span class="flex-grow"><span class="font-semibold">"${item.title}"</span>, ${item.description}</span>
-                <button class="admin-only-btn edit-item-btn" data-section="${sectionName}" data-index="${index}">✏️</button>
-                <button class="admin-only-btn delete-item-btn" data-section="${sectionName}" data-index="${index}">-</button>
+                <div class="flex flex-col gap-2">
+                    <button class="admin-only-btn edit-item-btn" data-section="${sectionName}" data-index="${index}">✏️</button>
+                    <button class="admin-only-btn delete-item-btn" data-section="${sectionName}" data-index="${index}">-</button>
+                </div>
             </li>`).join('');
     }
+    
+    // --- 관리자 모드 및 이벤트 핸들러 ---
+    // ... 이 아래 모든 코드는 변경할 필요가 없습니다 ...
 
     function enterAdminMode() {
         adminMode = true;
@@ -190,7 +169,7 @@ document.addEventListener('DOMContentLoaded', () => {
             button.disabled = false;
         }
     });
-
+    
     document.getElementById('password-cancel').addEventListener('click', () => {
         passwordModal.classList.add('hidden');
         document.getElementById('password-input').value = '';
@@ -198,13 +177,13 @@ document.addEventListener('DOMContentLoaded', () => {
     
     function handleAddItem(e) {
         const section = e.target.dataset.section;
-        openEditModal(section); // index 없이 호출하면 '추가' 모드
+        openEditModal(section);
     }
     
     function handleEditItem(e) {
         const section = e.target.dataset.section;
         const index = parseInt(e.target.dataset.index, 10);
-        openEditModal(section, index); // index와 함께 호출하면 '수정' 모드
+        openEditModal(section, index);
     }
 
     function handleDeleteItem(e) {
@@ -224,15 +203,15 @@ document.addEventListener('DOMContentLoaded', () => {
         let fieldsHtml = '';
         if (section === 'publications') {
             fieldsHtml = `
-                <label>Title</label><input type="text" id="edit-title" class="w-full p-2 border rounded" value="${item.title || ''}">
-                <label>Authors</label><input type="text" id="edit-authors" class="w-full p-2 border rounded" value="${item.authors || ''}">
-                <label>Journal</label><input type="text" id="edit-journal" class="w-full p-2 border rounded" value="${item.journal || ''}">
-                <label>Year</label><input type="text" id="edit-year" class="w-full p-2 border rounded" value="${item.year || ''}">
+                <label class="font-semibold">Title</label><input type="text" id="edit-title" class="w-full p-2 border rounded" value="${item.title || ''}">
+                <label class="font-semibold">Authors</label><input type="text" id="edit-authors" class="w-full p-2 border rounded" value="${item.authors || ''}">
+                <label class="font-semibold">Journal</label><input type="text" id="edit-journal" class="w-full p-2 border rounded" value="${item.journal || ''}">
+                <label class="font-semibold">Year</label><input type="text" id="edit-year" class="w-full p-2 border rounded" value="${item.year || ''}">
             `;
         } else {
             fieldsHtml = `
-                <label>Title</label><input type="text" id="edit-title" class="w-full p-2 border rounded" value="${item.title || ''}">
-                <label>Description</label><textarea id="edit-description" class="w-full p-2 border rounded h-24">${item.description || ''}</textarea>
+                <label class="font-semibold">Title</label><input type="text" id="edit-title" class="w-full p-2 border rounded" value="${item.title || ''}">
+                <label class="font-semibold">Description</label><textarea id="edit-description" class="w-full p-2 border rounded h-24">${item.description || ''}</textarea>
             `;
         }
 
@@ -259,8 +238,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 authors: document.getElementById('edit-authors').value,
                 journal: document.getElementById('edit-journal').value,
                 year: document.getElementById('edit-year').value,
-                pdf_link: (isNew ? "#" : siteData[section][editIndex].pdf_link), // 기존 링크 유지
-                doi_link: (isNew ? "#" : siteData[section][editIndex].doi_link)  // 기존 링크 유지
+                pdf_link: (isNew ? "#" : siteData[section][editIndex].pdf_link),
+                doi_link: (isNew ? "#" : siteData[section][editIndex].doi_link)
             };
         } else {
              updatedItem = {

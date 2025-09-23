@@ -19,53 +19,27 @@ document.addEventListener('DOMContentLoaded', () => {
                 year: "2025", 
                 link_text: "PDF",
                 link_url: "#"
-            }, 
-            { 
-                title: "AI-based Prediction of Material Tribological Properties", 
-                authors: "이영희, <strong>서동원</strong>", 
-                journal: "<em>Proceedings of ICME</em>, Busan, South Korea.", 
-                year: "2024", 
-                link_text: "DOI",
-                link_url: "#"
             }
         ],
         conferences: [
             { 
                 title: "A Study on TENG Performance Optimization", 
                 description: "Oral Presentation, KSTLE 2025 (한국트라이볼로지학회), Jeju, South Korea, 2025년 4월." 
-            }, 
-            { 
-                title: "Introduction to Metal Organic Frameworks", 
-                description: "Poster Presentation, KICHE 2024 (한국화학공학회), Daejeon, South Korea, 2024년 10월." 
             }
         ],
         education: [
             {
                 title: "국립금오공과대학교, 기계공학 석사",
                 description: "2024년 3월 - 현재"
-            },
-            {
-                title: "국립금오공과대학교, 기계공학 학사",
-                description: "GPA: 4.0/4.5 | 2020년 3월 - 2024년 2월"
             }
         ],
         awards: [
             { 
                 title: "최우수 포스터상", 
                 description: "KSTLE 2025 (한국트라이볼로지학회), 2025년." 
-            }, 
-            { 
-                title: "BK21 대학원 혁신지원사업 장학금", 
-                description: "국립금오공과대학교, 2024년 - 현재." 
             }
         ]
     };
-
-    // ===== 디버깅 코드 시작 =====
-    console.log("--- 디버깅 시작: initialData 객체를 확인합니다. ---");
-    console.log(initialData);
-    console.log("--- 'education' 키가 존재하나요? ---", initialData.hasOwnProperty('education'));
-    // ===== 디버깅 코드 끝 =====
 
     let siteData;
     let adminMode = false;
@@ -75,9 +49,23 @@ document.addEventListener('DOMContentLoaded', () => {
     const editModal = document.getElementById('edit-modal');
     const adminFab = document.getElementById('admin-fab');
 
+    // ===== 수정된 데이터 로딩 함수 =====
     function loadData() {
-        const savedData = localStorage.getItem('portfolioData');
-        siteData = savedData ? JSON.parse(savedData) : JSON.parse(JSON.stringify(initialData));
+        const savedDataString = localStorage.getItem('portfolioData');
+        const savedData = savedDataString ? JSON.parse(savedDataString) : null;
+
+        // 저장된 데이터와 초기 데이터를 합쳐서 항상 모든 키가 존재하도록 보장
+        // Object.assign을 사용하여 깊은 복사를 하되, 목록은 초기 데이터 구조를 따름
+        siteData = {
+            ...initialData,
+            ...savedData,
+            profile: { ...initialData.profile, ...(savedData ? savedData.profile : {}) },
+            publications: (savedData && savedData.publications) ? savedData.publications : initialData.publications,
+            conferences: (savedData && savedData.conferences) ? savedData.conferences : initialData.conferences,
+            education: (savedData && savedData.education) ? savedData.education : initialData.education,
+            awards: (savedData && savedData.awards) ? savedData.awards : initialData.awards,
+        };
+        
         renderAll();
     }
 
@@ -108,7 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const container = document.getElementById('about');
         container.innerHTML = `
             <div class="flex flex-col md:flex-row items-center bg-white p-8 rounded-xl shadow-lg">
-                <div class="md:w-1-3 text-center mb-6 md:mb-0"><img src="${data.avatar}" alt="프로필 사진" class="rounded-full w-48 h-48 mx-auto object-cover border-4 border-indigo-200 shadow-md"></div>
+                <div class="md:w-1/3 text-center mb-6 md:mb-0"><img src="${data.avatar}" alt="프로필 사진" class="rounded-full w-48 h-48 mx-auto object-cover border-4 border-indigo-200 shadow-md"></div>
                 <div class="md:w-2/3 md:pl-12">
                     <h1 class="text-5xl font-bold text-gray-900 mb-2" data-editable="profile.name">${data.name}</h1>
                     <p class="text-xl text-indigo-600 font-semibold mb-5" data-editable="profile.affiliation">${data.affiliation}</p>
@@ -168,8 +156,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!container) return;
         
         if (!Array.isArray(data)) {
-            // 이 부분이 현재 오류를 발생시키는 지점입니다.
-            console.error(`Data for section "${sectionName}" is not an array.`, data);
             data = [];
         }
         container.innerHTML = data.map((item, index) => `
@@ -181,8 +167,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             </li>`).join('');
     }
-
-    // ... (이 아래 코드는 변경사항 없습니다) ...
 
     function enterAdminMode() {
         adminMode = true;

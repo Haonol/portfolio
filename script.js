@@ -36,16 +36,13 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const response = await fetch('/.netlify/functions/get-data');
             if (!response.ok) {
-                // If the server responds with an error, we should see it in the network tab.
-                // We'll throw an error to be caught by the catch block.
-                throw new Error(`Server responded with status: ${response.status}`);
+                throw new Error(`Server responded with ${response.status}`);
             }
             const dataFromServer = await response.json();
             
             if (dataFromServer && dataFromServer.profile) {
                 siteData = dataFromServer;
             } else {
-                // This happens if the blob is empty or doesn't have the expected structure
                 siteData = initialData;
             }
         } catch (error) {
@@ -61,16 +58,12 @@ document.addEventListener('DOMContentLoaded', () => {
             alert("저장이 취소되었습니다.");
             return;
         }
-
         document.querySelectorAll('[data-editable]').forEach(el => {
             const keys = el.dataset.editable.split('.');
             let temp = siteData;
-            for (let i = 0; i < keys.length - 1; i++) {
-                temp = temp[keys[i]];
-            }
+            for (let i = 0; i < keys.length - 1; i++) { temp = temp[keys[i]]; }
             temp[keys[keys.length - 1]] = el.innerHTML;
         });
-
         try {
             const response = await fetch('/.netlify/functions/save-data', {
                 method: 'POST',
@@ -102,20 +95,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function renderProfile(data) {
         const container = document.getElementById('about');
-        // Add a check to ensure `data` is not undefined before trying to access its properties
-        if (!container || !data) return; 
-        container.innerHTML = `
-            <div class="flex flex-col md:flex-row items-center bg-white p-8 rounded-xl shadow-lg">
-                <div class="md:w-1/3 text-center mb-6 md:mb-0"><img src="${data.avatar}" alt="프로필 사진" class="rounded-full w-48 h-48 mx-auto object-cover border-4 border-indigo-200 shadow-md"></div>
-                <div class="md:w-2/3 md:pl-12">
-                    <h1 class="text-5xl font-bold text-gray-900 mb-2" data-editable="profile.name">${data.name}</h1>
-                    <p class="text-xl text-indigo-600 font-semibold mb-5" data-editable="profile.affiliation">${data.affiliation}</p>
-                    <p class="mb-6 text-base leading-relaxed" data-editable="profile.body">${data.body}</p>
-                    <div class="flex items-center space-x-5">
-                        <a href="${data.cv_link}" class="bg-indigo-600 text-white px-5 py-2 rounded-lg hover:bg-indigo-700 shadow-md">CV 다운로드</a>
-                    </div>
-                </div>
-            </div>`;
+        if(!container || !data) return;
+        container.innerHTML = `<div class="flex flex-col md:flex-row items-center bg-white p-8 rounded-xl shadow-lg"><div class="md:w-1/3 text-center mb-6 md:mb-0"><img src="${data.avatar}" alt="프로필 사진" class="rounded-full w-48 h-48 mx-auto object-cover border-4 border-indigo-200 shadow-md"></div><div class="md:w-2/3 md:pl-12"><h1 class="text-5xl font-bold text-gray-900 mb-2" data-editable="profile.name">${data.name}</h1><p class="text-xl text-indigo-600 font-semibold mb-5" data-editable="profile.affiliation">${data.affiliation}</p><p class="mb-6 text-base leading-relaxed" data-editable="profile.body">${data.body}</p><div class="flex items-center space-x-5"><a href="${data.cv_link}" class="bg-indigo-600 text-white px-5 py-2 rounded-lg hover:bg-indigo-700 shadow-md">CV 다운로드</a></div></div></div>`;
         document.getElementById('nav-logo').innerHTML = data.english_name;
         document.getElementById('footer-name').innerHTML = data.english_name;
     }
@@ -124,17 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const table = document.getElementById('publications-table');
         if (!table) return;
         const thead = `<thead><tr><th scope="col">Title & Authors</th><th scope="col">Journal / Conference</th><th scope="col">Year</th><th scope="col">Link</th><th scope="col" class="admin-only-header" style="display: none;">Edit</th></tr></thead>`;
-        const tbody = `<tbody>
-            ${(data || []).map((item, index) => `
-                <tr>
-                    <td class="align-top"><p class="font-semibold text-gray-800">${item.title}</p><p class="text-xs text-gray-600">${item.authors}</p></td>
-                    <td class="align-top">${item.journal}</td>
-                    <td class="align-top">${item.year}</td>
-                    <td class="align-top">${item.link_url && item.link_text ? `<a href="${item.link_url}" target="_blank" rel="noopener noreferrer" class="publication-link">${item.link_text}</a>` : ''}</td>
-                    <td class="align-top admin-only-cell" style="display: none;"><div class="flex items-center gap-2"><button class="admin-only-btn edit-item-btn" data-section="publications" data-index="${index}">✏️</button><button class="admin-only-btn delete-item-btn" data-section="publications" data-index="${index}">-</button></div></td>
-                </tr>
-            `).join('')}
-        </tbody>`;
+        const tbody = `<tbody>${(data || []).map((item, index) => `<tr><td class="align-top"><p class="font-semibold text-gray-800">${item.title}</p><p class="text-xs text-gray-600">${item.authors}</p></td><td class="align-top">${item.journal}</td><td class="align-top">${item.year}</td><td class="align-top">${item.link_url && item.link_text ? `<a href="${item.link_url}" target="_blank" rel="noopener noreferrer" class="publication-link">${item.link_text}</a>` : ''}</td><td class="align-top admin-only-cell" style="display: none;"><div class="flex items-center gap-2"><button class="admin-only-btn edit-item-btn" data-section="publications" data-index="${index}">✏️</button><button class="admin-only-btn delete-item-btn" data-section="publications" data-index="${index}">-</button></div></td></tr>`).join('')}</tbody>`;
         table.innerHTML = thead + tbody;
     }
 
@@ -142,20 +113,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const container = document.getElementById(containerId);
         if (!container) return;
         if (!Array.isArray(data)) { data = []; }
-        container.innerHTML = data.map((item, index) => `
-            <li class="flex items-start gap-2">
-                <span class="flex-grow"><span class="font-semibold">"${item.title}"</span>, ${item.description}</span>
-                <div class="flex flex-col gap-2">
-                    <button class="admin-only-btn edit-item-btn" data-section="${sectionName}" data-index="${index}">✏️</button>
-                    <button class="admin-only-btn delete-item-btn" data-section="${sectionName}" data-index="${index}">-</button>
-                </div>
-            </li>
-        `).join('');
+        container.innerHTML = data.map((item, index) => `<li class="flex items-start gap-2"><span class="flex-grow"><span class="font-semibold">"${item.title}"</span>, ${item.description}</span><div class="flex flex-col gap-2"><button class="admin-only-btn edit-item-btn" data-section="${sectionName}" data-index="${index}">✏️</button><button class="admin-only-btn delete-item-btn" data-section="${sectionName}" data-index="${index}">-</button></div></li>`).join('');
     }
 
     function enterAdminMode() { adminMode = true; renderAll(); }
     function exitAdminMode() { adminMode = false; renderAll(); }
-
     function updateAdminUI() {
         document.querySelectorAll('[data-editable]').forEach(el => el.setAttribute('contenteditable', adminMode));
         const adminElements = document.querySelectorAll('.admin-only-btn, .admin-only-header, .admin-only-cell');
@@ -163,16 +125,12 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('edit-icon').classList.toggle('hidden', adminMode);
         document.getElementById('save-icon').classList.toggle('hidden', !adminMode);
     }
-
     adminFab.addEventListener('click', () => {
         if (!adminMode) {
             passwordModal.classList.remove('hidden');
             document.getElementById('password-input').focus();
-        } else {
-            saveData();
-        }
+        } else { saveData(); }
     });
-
     document.getElementById('password-submit').addEventListener('click', async () => {
         const input = document.getElementById('password-input');
         const password = input.value;
@@ -200,22 +158,16 @@ document.addEventListener('DOMContentLoaded', () => {
             button.disabled = false;
         }
     });
-
     document.getElementById('password-cancel').addEventListener('click', () => {
         passwordModal.classList.add('hidden');
         document.getElementById('password-input').value = '';
     });
-
     document.addEventListener('click', (e) => {
         if (!adminMode) return;
         const target = e.target.closest('button');
         if (!target) return;
-        if (target.classList.contains('add-item-btn')) {
-            openEditModal(target.dataset.section);
-        }
-        if (target.classList.contains('edit-item-btn')) {
-            openEditModal(target.dataset.section, parseInt(target.dataset.index, 10));
-        }
+        if (target.classList.contains('add-item-btn')) { openEditModal(target.dataset.section); }
+        if (target.classList.contains('edit-item-btn')) { openEditModal(target.dataset.section, parseInt(target.dataset.index, 10)); }
         if (target.classList.contains('delete-item-btn')) {
             if (!confirm('정말로 이 항목을 삭제하시겠습니까?')) return;
             const section = target.dataset.section;
@@ -224,7 +176,6 @@ document.addEventListener('DOMContentLoaded', () => {
             renderAll();
         }
     });
-
     function openEditModal(section, index = null) {
         editIndex = index;
         const isNew = index === null;
@@ -232,43 +183,22 @@ document.addEventListener('DOMContentLoaded', () => {
         const modalContent = document.getElementById('edit-modal-content');
         let fieldsHtml = '';
         if (section === 'publications') {
-            fieldsHtml = `
-                <label class="font-semibold">Title</label><input type="text" id="edit-title" class="w-full p-2 border rounded" value="${item.title || ''}">
-                <label class="font-semibold">Authors</label><input type="text" id="edit-authors" class="w-full p-2 border rounded" value="${item.authors || ''}">
-                <label class="font-semibold">Journal / Conference</label><input type="text" id="edit-journal" class="w-full p-2 border rounded" value="${item.journal || ''}">
-                <label class="font-semibold">Year</label><input type="text" id="edit-year" class="w-full p-2 border rounded" value="${item.year || ''}">
-                <label class="font-semibold">Link Text</label><input type="text" id="edit-link-text" class="w-full p-2 border rounded" value="${item.link_text || ''}">
-                <label class="font-semibold">Link URL</label><input type="text" id="edit-link-url" class="w-full p-2 border rounded" value="${item.link_url || ''}">
-            `;
+            fieldsHtml = `<label class="font-semibold">Title</label><input type="text" id="edit-title" class="w-full p-2 border rounded" value="${item.title || ''}"><label class="font-semibold">Authors</label><input type="text" id="edit-authors" class="w-full p-2 border rounded" value="${item.authors || ''}"><label class="font-semibold">Journal / Conference</label><input type="text" id="edit-journal" class="w-full p-2 border rounded" value="${item.journal || ''}"><label class="font-semibold">Year</label><input type="text" id="edit-year" class="w-full p-2 border rounded" value="${item.year || ''}"><label class="font-semibold">Link Text</label><input type="text" id="edit-link-text" class="w-full p-2 border rounded" value="${item.link_text || ''}"><label class="font-semibold">Link URL</label><input type="text" id="edit-link-url" class="w-full p-2 border rounded" value="${item.link_url || ''}">`;
         } else {
-            fieldsHtml = `
-                <label class="font-semibold">Title</label><input type="text" id="edit-title" class="w-full p-2 border rounded" value="${item.title || ''}">
-                <label class="font-semibold">Description</label><textarea id="edit-description" class="w-full p-2 border rounded h-24">${item.description || ''}</textarea>
-            `;
+            fieldsHtml = `<label class="font-semibold">Title</label><input type="text" id="edit-title" class="w-full p-2 border rounded" value="${item.title || ''}"><label class="font-semibold">Description</label><textarea id="edit-description" class="w-full p-2 border rounded h-24">${item.description || ''}</textarea>`;
         }
         modalContent.innerHTML = `<h3 class="text-lg font-bold mb-4">${isNew ? '항목 추가' : '항목 수정'}</h3><div class="space-y-4 edit-form">${fieldsHtml}</div><div class="mt-6 text-right"><button id="edit-cancel" class="px-4 py-2 bg-gray-200 rounded mr-2">취소</button><button id="edit-save" class="px-4 py-2 bg-indigo-600 text-white rounded">저장</button></div>`;
         document.getElementById('edit-save').onclick = () => saveEdit(section);
         document.getElementById('edit-cancel').onclick = () => editModal.classList.add('hidden');
         editModal.classList.remove('hidden');
     }
-
     function saveEdit(section) {
         const isNew = editIndex === null;
         let updatedItem;
         if (section === 'publications') {
-            updatedItem = {
-                title: document.getElementById('edit-title').value,
-                authors: document.getElementById('edit-authors').value,
-                journal: document.getElementById('edit-journal').value,
-                year: document.getElementById('edit-year').value,
-                link_text: document.getElementById('edit-link-text').value,
-                link_url: document.getElementById('edit-link-url').value
-            };
+            updatedItem = { title: document.getElementById('edit-title').value, authors: document.getElementById('edit-authors').value, journal: document.getElementById('edit-journal').value, year: document.getElementById('edit-year').value, link_text: document.getElementById('edit-link-text').value, link_url: document.getElementById('edit-link-url').value };
         } else {
-             updatedItem = {
-                title: document.getElementById('edit-title').value,
-                description: document.getElementById('edit-description').value
-            };
+             updatedItem = { title: document.getElementById('edit-title').value, description: document.getElementById('edit-description').value };
         }
         if (isNew) {
             if (!Array.isArray(siteData[section])) { siteData[section] = []; }
@@ -279,9 +209,7 @@ document.addEventListener('DOMContentLoaded', () => {
         editModal.classList.add('hidden');
         renderAll();
     }
-
     loadData();
-
     const reveals = document.querySelectorAll('.reveal');
     function revealSections() {
         reveals.forEach(reveal => {

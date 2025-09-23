@@ -24,11 +24,9 @@ body {
     padding: 2px;
     background-color: #eef2ff;
     border-radius: 4px;
-    transition: all 0.2s ease-in-out;
 }
 [contenteditable="true"]:focus {
-    outline: 2px solid #4338ca; 
-    background-color: #e0e7ff;
+    outline: 2px solid #4338ca;
 }
 .admin-only-btn {
     display: none;

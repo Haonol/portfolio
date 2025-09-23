@@ -133,7 +133,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const tbody = `
             <tbody>
-                ${data.map((item, index) => `
+                ${(data || []).map((item, index) => `
                     <tr>
                         <td class="align-top">
                             <p class="font-semibold text-gray-800">${item.title}</p>
@@ -177,11 +177,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function enterAdminMode() {
         adminMode = true;
+        document.body.classList.add('admin-mode-active');
         renderAll();
     }
 
     function exitAdminMode() {
         adminMode = false;
+        document.body.classList.remove('admin-mode-active');
         renderAll();
     }
 
@@ -190,17 +192,11 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const adminElements = document.querySelectorAll('.admin-only-btn, .admin-only-header, .admin-only-cell');
         adminElements.forEach(el => {
-            el.style.display = adminMode ? '' : 'none'; // Use '' to revert to default display
+            el.style.display = adminMode ? '' : 'none';
         });
         
         document.getElementById('edit-icon').classList.toggle('hidden', adminMode);
         document.getElementById('save-icon').classList.toggle('hidden', !adminMode);
-
-        if (adminMode) {
-            document.querySelectorAll('.add-item-btn').forEach(btn => btn.addEventListener('click', handleAddItem));
-            document.querySelectorAll('.edit-item-btn').forEach(btn => btn.addEventListener('click', handleEditItem));
-            document.querySelectorAll('.delete-item-btn').forEach(btn => btn.addEventListener('click', handleDeleteItem));
-        }
     }
 
     adminFab.addEventListener('click', () => {
@@ -250,24 +246,31 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('password-input').value = '';
     });
     
-    function handleAddItem(e) {
-        const section = e.target.dataset.section;
-        openEditModal(section);
-    }
-    
-    function handleEditItem(e) {
-        const section = e.target.dataset.section;
-        const index = parseInt(e.target.dataset.index, 10);
-        openEditModal(section, index);
-    }
+    // ===== 개선된 이벤트 핸들러 =====
+    document.addEventListener('click', (e) => {
+        if (!adminMode) return; // 관리자 모드가 아니면 아무것도 안 함
 
-    function handleDeleteItem(e) {
-        if (!confirm('정말로 이 항목을 삭제하시겠습니까?')) return;
-        const section = e.target.dataset.section;
-        const index = parseInt(e.target.dataset.index, 10);
-        siteData[section].splice(index, 1);
-        renderAll();
-    }
+        const target = e.target.closest('button');
+        if (!target) return;
+
+        if (target.classList.contains('add-item-btn')) {
+            const section = target.dataset.section;
+            openEditModal(section);
+        }
+        if (target.classList.contains('edit-item-btn')) {
+            const section = target.dataset.section;
+            const index = parseInt(target.dataset.index, 10);
+            openEditModal(section, index);
+        }
+        if (target.classList.contains('delete-item-btn')) {
+            if (!confirm('정말로 이 항목을 삭제하시겠습니까?')) return;
+            const section = target.dataset.section;
+            const index = parseInt(target.dataset.index, 10);
+            siteData[section].splice(index, 1);
+            renderAll();
+        }
+    });
+
 
     function openEditModal(section, index = null) {
         editIndex = index;
@@ -335,6 +338,7 @@ document.addEventListener('DOMContentLoaded', () => {
         renderAll();
     }
 
+    // 초기화 및 기타 UI 스크립트
     loadData();
 
     const reveals = document.querySelectorAll('.reveal');

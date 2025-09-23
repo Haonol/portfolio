@@ -5,14 +5,14 @@ document.addEventListener('DOMContentLoaded', () => {
             english_name: "Dongwon Seo", 
             affiliation: "기계공학과 석사과정 | 국립금오공과대학교", 
             body: "저는 마찰공학(Tribology)과 마찰전기 나노발전기(TENG)를 핵심 연구 분야로 다루고 있습니다. 특히, 금속 유기 구조체(MOFs)의 적용과 인공지능(AI) 기술을 융합하여 에너지 하베스팅 및 표면 공학 분야의 새로운 가능성을 탐구하는 데 집중하고 있습니다.", 
-            avatar: "https://i.imgur.com/81BCR6A.png", // Imgur 기본 이미지 (샘플)
+            avatar: "https://i.imgur.com/81BCR6A.png",
             cv_link: "#", 
             google_scholar: "#", 
             linkedin: "#" 
         },
         publications: [
-            { title: "Energy Harvesting using Triboelectric Nanogenerators with MOFs", authors: "<strong>Dongwon Seo</strong>, Cheolsu Kim", journal: "<em>Journal of Nanotechnology</em>, 15(2), 45-58.", year: "2025 (exp.)", link_text: "PDF", link_url: "#" },
-            { title: "AI-based Prediction of Material Tribological Properties", authors: "Younghee Lee, <strong>Dongwon Seo</strong>", journal: "<em>Proceedings of ICME 2024</em>, Busan, South Korea.", year: "2024", link_text: "DOI", link_url: "#" }
+            { title: "Scott-Russel linkage-based triboelectric self-powered sensor for contact material-independent force sensing and tactile recognition", authors: "<strong>Dongwon Seo</strong>, Jimin Kong, and Jihoon Chung*", journal: "<em>Small</em> (2023 IF: 13.0, JCR Top 10%)", year: "2024", link_text: "DOI", link_url: "#" },
+            { title: "Vertical Contact/Separation Triboelectric Generator Utilizing Surface Characteristics of Metal-Organic Frameworks", authors: "Kyoung-Hwan Kim, Jimin Kong, <strong>Dongwon Seo</strong>, and Jihoon Chung*", journal: "<em>Journal of the Korean Society of Manufacturing Process Engineers (KCI)</em>", year: "2025", link_text: "Link", link_url: "#" }
         ],
         conferences: [
             { title: "A Study on TENG Performance Optimization", description: "Oral Presentation, KSTLE 2025, Jeju, South Korea" }
@@ -137,11 +137,22 @@ document.addEventListener('DOMContentLoaded', () => {
         }).join('');
     }
 
+    // ===== 이 함수의 'span' 태그 클래스가 수정되었습니다 =====
     function renderList(containerId, data, sectionName) {
         const container = document.getElementById(containerId);
         if (!container) return;
         if (!Array.isArray(data)) { data = []; }
-        container.innerHTML = data.map((item, index) => `<li class="flex items-start gap-2 py-1"><div class="flex-grow"><span class="font-semibold text-gray-800">${item.title}</span><p class="text-sm text-gray-600">${item.description}</p></div><div class="flex items-center gap-2"><button class="admin-only-btn edit-item-btn" data-section="${sectionName}" data-index="${index}">✏️</button><button class="admin-only-btn delete-item-btn" data-section="${sectionName}" data-index="${index}">-</button></div></li>`).join('');
+        container.innerHTML = data.map((item, index) => `
+            <li class="flex items-start gap-2 py-2">
+                <div class="flex-grow">
+                    <span class="text-lg font-bold text-gray-800">${item.title}</span>
+                    <p class="text-sm text-gray-600 mt-1">${item.description}</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button class="admin-only-btn edit-item-btn" data-section="${sectionName}" data-index="${index}">✏️</button>
+                    <button class="admin-only-btn delete-item-btn" data-section="${sectionName}" data-index="${index}">-</button>
+                </div>
+            </li>`).join('');
     }
 
     function enterAdminMode() { 
@@ -214,7 +225,6 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('click', (e) => {
         if (!adminMode) return;
         
-        // 사진 변경 버튼 클릭 처리
         if (e.target.id === 'change-photo-btn') {
             const newAvatarUrl = prompt("새로운 프로필 사진 이미지 URL을 입력하세요:");
             if (newAvatarUrl) {

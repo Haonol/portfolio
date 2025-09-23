@@ -1,15 +1,16 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // --- 초기 데이터 설정 ---
     const initialData = {
         profile: { 
             name: "서동원", 
             english_name: "Dongwon Seo", 
             affiliation: "기계공학과 석사과정 | 국립금오공과대학교", 
-            body: "...", 
+            body: "저는 마찰공학(Tribology)과 마찰전기 나노발전기(TENG)를 핵심 연구 분야로 다루고 있습니다. 특히, 금속 유기 구조체(MOFs)의 적용과 인공지능(AI) 기술을 융합하여 에너지 하베스팅 및 표면 공학 분야의 새로운 가능성을 탐구하는 데 집중하고 있습니다.", 
             avatar: "https://i.imgur.com/81BCR6A.png",
-            cv_link: "#",
+            cv_link: "#", 
             // ▼▼▼ 본인의 이메일과 구글 스칼라 주소를 입력하세요 ▼▼▼
-            email: "sdw2051@kumoh.ac.kr", 
-            google_scholar: "https://scholar.google.com/citations?user=bJknXM0AAAAJ&hl=ko", 
+            email: "your.email@example.com", 
+            google_scholar: "https://scholar.google.com/citations?user=yourid", 
             linkedin: "#" 
         },
         publications: [
@@ -87,8 +88,8 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('current-year').textContent = new Date().getFullYear();
         updateAdminUI();
     }
-
- function renderProfile(data) {
+    
+    function renderProfile(data) {
         const container = document.getElementById('about');
         if(!container || !data) return;
         container.innerHTML = `
@@ -103,22 +104,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     <h1 class="text-4xl lg:text-5xl font-bold text-gray-900 mb-2 text-center md:text-left" data-editable="profile.name">${data.name}</h1>
                     <p class="text-xl text-indigo-600 font-semibold mb-5 text-center md:text-left" data-editable="profile.affiliation">${data.affiliation}</p>
                     <p class="mb-6 text-base leading-relaxed text-gray-600" data-editable="profile.body">${data.body}</p>
-                    
                     <div class="flex items-center justify-center md:justify-start space-x-5">
                         <a href="${data.cv_link}" class="bg-indigo-600 text-white px-5 py-2 rounded-lg hover:bg-indigo-700 shadow-md transition-all">CV 다운로드</a>
-                        
                         <a href="mailto:${data.email}" title="Email" class="social-icon-link">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
-                            </svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" /></svg>
                         </a>
-
                         <a href="${data.google_scholar}" target="_blank" rel="noopener noreferrer" title="Google Scholar" class="social-icon-link">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                               <path d="M12 14l9-5-9-5-9 5 9 5z" />
-                               <path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
-                               <path stroke-linecap="round" stroke-linejoin="round" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222 4 2.222V20M1 12v7a2 2 0 002 2h14a2 2 0 002-2v-7" />
-                            </svg>
+                            <svg fill="currentColor" viewBox="0 0 24 24"><path d="M5.242 13.769L0 9.5L12 0l12 9.5l-5.242 4.269C17.548 11.249 14.978 9.5 12 9.5s-5.548 1.748-6.758 4.269zM12 10.9c-1.39 0-2.583.52-3.483 1.343l3.483 2.829l3.483-2.829C14.583 11.42 13.39 10.9 12 10.9z"/></svg>
                         </a>
                     </div>
                 </div>
@@ -312,5 +304,4 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     window.addEventListener('scroll', revealSections);
     revealSections();
-
 });

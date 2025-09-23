@@ -5,30 +5,14 @@ document.addEventListener('DOMContentLoaded', () => {
             english_name: "Dongwon Seo", 
             affiliation: "기계공학과 석사과정 | 국립금오공과대학교", 
             body: "저는 마찰공학(Tribology)과 마찰전기 나노발전기(TENG)를 핵심 연구 분야로 다루고 있습니다. 특히, 금속 유기 구조체(MOFs)의 적용과 인공지능(AI) 기술을 융합하여 에너지 하베스팅 및 표면 공학 분야의 새로운 가능성을 탐구하는 데 집중하고 있습니다.", 
-            // ▼▼▼ 아래 링크를 1번 단계에서 복사한 본인 사진 링크로 바꾸세요 ▼▼▼
-            avatar: "https://i.imgur.com/example.png", 
+            avatar: "https://i.imgur.com/81BCR6A.png",
             cv_link: "#", 
             google_scholar: "#", 
             linkedin: "#" 
         },
         publications: [
-            { 
-                title: "Energy Harvesting using Triboelectric Nanogenerators with MOFs", 
-                authors: "<strong>Dongwon Seo</strong>, Cheolsu Kim", 
-                // ▼▼▼ 저널/학회명은 <em> 태그로 감싸주세요 ▼▼▼
-                journal: "<em>Journal of Nanotechnology</em>, 15(2), 45-58.", 
-                year: "2025 (exp.)", 
-                link_text: "PDF",
-                link_url: "#"
-            },
-            { 
-                title: "AI-based Prediction of Material Tribological Properties", 
-                authors: "Younghee Lee, <strong>Dongwon Seo</strong>", 
-                journal: "<em>Proceedings of ICME 2024</em>, Busan, South Korea.", 
-                year: "2024", 
-                link_text: "DOI",
-                link_url: "#"
-            }
+            { title: "Energy Harvesting using Triboelectric Nanogenerators with MOFs", authors: "<strong>Dongwon Seo</strong>, Cheolsu Kim", journal: "<em>Journal of Nanotechnology</em>, 15(2), 45-58.", year: "2025 (exp.)", link_text: "PDF", link_url: "#" },
+            { title: "AI-based Prediction of Material Tribological Properties", authors: "Younghee Lee, <strong>Dongwon Seo</strong>", journal: "<em>Proceedings of ICME 2024</em>, Busan, South Korea.", year: "2024", link_text: "DOI", link_url: "#" }
         ],
         conferences: [
             { title: "A Study on TENG Performance Optimization", description: "Oral Presentation, KSTLE 2025, Jeju, South Korea" }
@@ -98,13 +82,13 @@ document.addEventListener('DOMContentLoaded', () => {
         renderList('education-list', siteData.education, 'education');
         renderList('awards-list', siteData.awards, 'awards');
         document.getElementById('current-year').textContent = new Date().getFullYear();
-        updateAdminUI();
+        updateAdminUI(); // 이 함수가 이제 존재합니다.
     }
 
     function renderProfile(data) {
         const container = document.getElementById('about');
         if(!container || !data) return;
-        container.innerHTML = `<div class="flex flex-col md:flex-row items-center gap-8 bg-white p-8 rounded-xl shadow-lg"> ... </div>`; // Abbreviated
+        container.innerHTML = `<div class="flex flex-col md:flex-row items-center gap-8 bg-white p-8 rounded-xl shadow-lg"><div class="md:w-1/3 text-center mb-6 md:mb-0"><img src="${data.avatar}" alt="프로필 사진" class="rounded-full w-48 h-48 mx-auto object-cover border-4 border-indigo-200 shadow-md"></div><div class="md:w-2/3 md:pl-8"><h1 class="text-4xl lg:text-5xl font-bold text-gray-900 mb-2" data-editable="profile.name">${data.name}</h1><p class="text-xl text-indigo-600 font-semibold mb-5" data-editable="profile.affiliation">${data.affiliation}</p><p class="mb-6 text-base leading-relaxed text-gray-600" data-editable="profile.body">${data.body}</p><div class="flex items-center space-x-5"><a href="${data.cv_link}" class="bg-indigo-600 text-white px-5 py-2 rounded-lg hover:bg-indigo-700 shadow-md transition-all">CV 다운로드</a></div></div></div>`;
         document.getElementById('nav-logo').innerHTML = data.english_name;
         document.getElementById('footer-name').innerHTML = data.english_name;
     }
@@ -112,33 +96,8 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderPublications(data) {
         const table = document.getElementById('publications-table');
         if (!table) return;
-
         const thead = `<thead><tr><th scope="col">Year</th><th scope="col">Publication Details</th><th scope="col">Link</th><th scope="col" class="admin-only-header" style="display: none;">Admin</th></tr></thead>`;
-        
-        const tbody = `<tbody>
-            ${(data || []).map((item, index) => {
-                // em 태그를 찾아서 span.journal-name으로 교체
-                const styledJournal = item.journal.replace(/<em>(.*?)<\/em>/g, '<span class="journal-name">$1</span>');
-                
-                return `
-                <tr>
-                    <td class="align-top text-gray-500">${item.year}</td>
-                    <td class="align-top">
-                        <p class="font-semibold text-gray-800">${item.title}</p>
-                        <p class="text-sm text-gray-600">${item.authors}</p>
-                        <p class="text-sm text-gray-500 mt-1">${styledJournal}</p>
-                    </td>
-                    <td class="align-top">${item.link_url && item.link_text ? `<a href="${item.link_url}" target="_blank" rel="noopener noreferrer" class="publication-link">${item.link_text}</a>` : ''}</td>
-                    <td class="align-top admin-only-cell" style="display: none;">
-                        <div class="flex items-center gap-2">
-                            <button class="admin-only-btn edit-item-btn" data-section="publications" data-index="${index}">✏️</button>
-                            <button class="admin-only-btn delete-item-btn" data-section="publications" data-index="${index}">-</button>
-                        </div>
-                    </td>
-                </tr>
-            `}).join('')}
-        </tbody>`;
-        
+        const tbody = `<tbody>${(data || []).map((item, index) => {const styledJournal = item.journal.replace(/<em>(.*?)<\/em>/g, '<span class="journal-name">$1</span>'); return `<tr><td class="align-top text-gray-500 w-24">${item.year}</td><td class="align-top"><p class="font-semibold text-gray-800">${item.title}</p><p class="text-sm text-gray-600">${item.authors}</p><p class="text-sm text-gray-500 mt-1">${styledJournal}</p></td><td class="align-top w-28 text-center">${item.link_url && item.link_text ? `<a href="${item.link_url}" target="_blank" rel="noopener noreferrer" class="publication-link">${item.link_text}</a>` : ''}</td><td class="align-top admin-only-cell w-24" style="display: none;"><div class="flex items-center gap-2"><button class="admin-only-btn edit-item-btn" data-section="publications" data-index="${index}">✏️</button><button class="admin-only-btn delete-item-btn" data-section="publications" data-index="${index}">-</button></div></td></tr>`}).join('')}</tbody>`;
         table.innerHTML = thead + tbody;
     }
 
@@ -146,24 +105,122 @@ document.addEventListener('DOMContentLoaded', () => {
         const container = document.getElementById(containerId);
         if (!container) return;
         if (!Array.isArray(data)) { data = []; }
-        container.innerHTML = data.map((item, index) => `
-            <li class="flex items-start gap-2 py-1">
-                <div class="flex-grow">
-                    <span class="font-semibold text-gray-800">${item.title}</span>
-                    <p class="text-sm text-gray-600">${item.description}</p>
-                </div>
-                <div class="flex flex-col gap-2">
-                    <button class="admin-only-btn edit-item-btn" data-section="${sectionName}" data-index="${index}">✏️</button>
-                    <button class="admin-only-btn delete-item-btn" data-section="${sectionName}" data-index="${index}">-</button>
-                </div>
-            </li>`).join('');
+        container.innerHTML = data.map((item, index) => `<li class="flex items-start gap-2 py-1"><div class="flex-grow"><span class="font-semibold text-gray-800">${item.title}</span><p class="text-sm text-gray-600">${item.description}</p></div><div class="flex items-center gap-2"><button class="admin-only-btn edit-item-btn" data-section="${sectionName}" data-index="${index}">✏️</button><button class="admin-only-btn delete-item-btn" data-section="${sectionName}" data-index="${index}">-</button></div></li>`).join('');
     }
 
-    // --- Admin mode, Event Handlers, Modals ---
-    // (이 아래 모든 함수는 이전 버전과 동일하므로 전체 코드를 생략합니다. 필요시 요청해주세요.)
-    // enterAdminMode, exitAdminMode, updateAdminUI, event listeners, openEditModal, saveEdit
+    function enterAdminMode() { adminMode = true; renderAll(); }
+    function exitAdminMode() { adminMode = false; renderAll(); }
     
+    function updateAdminUI() {
+        document.querySelectorAll('[data-editable]').forEach(el => el.setAttribute('contenteditable', adminMode));
+        const adminElements = document.querySelectorAll('.admin-only-btn, .admin-only-header, .admin-only-cell');
+        adminElements.forEach(el => { el.style.display = adminMode ? 'flex' : 'none'; });
+        document.getElementById('edit-icon').classList.toggle('hidden', adminMode);
+        document.getElementById('save-icon').classList.toggle('hidden', !adminMode);
+    }
+
+    adminFab.addEventListener('click', () => {
+        if (!adminMode) {
+            passwordModal.classList.remove('hidden');
+            document.getElementById('password-input').focus();
+        } else { saveData(); }
+    });
+
+    document.getElementById('password-submit').addEventListener('click', async () => {
+        const input = document.getElementById('password-input');
+        const password = input.value;
+        const button = document.getElementById('password-submit');
+        button.textContent = '확인 중...';
+        button.disabled = true;
+        try {
+            const response = await fetch('/api/check-password', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ password: password }),
+            });
+            const result = await response.json();
+            if (response.ok && result.success) {
+                passwordModal.classList.add('hidden');
+                input.value = '';
+                enterAdminMode();
+            } else {
+                alert(result.message || '인증에 실패했습니다.');
+            }
+        } catch (error) {
+            alert('서버와 통신 중 오류가 발생했습니다.');
+        } finally {
+            button.textContent = '확인';
+            button.disabled = false;
+        }
+    });
+
+    document.getElementById('password-cancel').addEventListener('click', () => {
+        passwordModal.classList.add('hidden');
+        document.getElementById('password-input').value = '';
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!adminMode) return;
+        const target = e.target.closest('button');
+        if (!target) return;
+        if (target.classList.contains('add-item-btn')) { openEditModal(target.dataset.section); }
+        if (target.classList.contains('edit-item-btn')) { openEditModal(target.dataset.section, parseInt(target.dataset.index, 10)); }
+        if (target.classList.contains('delete-item-btn')) {
+            if (!confirm('정말로 이 항목을 삭제하시겠습니까?')) return;
+            const section = target.dataset.section;
+            const index = parseInt(target.dataset.index, 10);
+            siteData[section].splice(index, 1);
+            renderAll();
+        }
+    });
+
+    function openEditModal(section, index = null) {
+        editIndex = index;
+        const isNew = index === null;
+        const item = isNew ? {} : siteData[section][index];
+        const modalContent = document.getElementById('edit-modal-content');
+        let fieldsHtml = '';
+        if (section === 'publications') {
+            fieldsHtml = `<label class="font-semibold">Year</label><input type="text" id="edit-year" class="w-full p-2 border rounded" value="${item.year || ''}"><label class="font-semibold">Title</label><input type="text" id="edit-title" class="w-full p-2 border rounded" value="${item.title || ''}"><label class="font-semibold">Authors</label><input type="text" id="edit-authors" class="w-full p-2 border rounded" value="${item.authors || ''}"><label class="font-semibold">Journal / Conference</label><textarea id="edit-journal" class="w-full p-2 border rounded h-20">${item.journal || ''}</textarea><label class="font-semibold">Link Text</label><input type="text" id="edit-link-text" class="w-full p-2 border rounded" value="${item.link_text || ''}"><label class="font-semibold">Link URL</label><input type="text" id="edit-link-url" class="w-full p-2 border rounded" value="${item.link_url || ''}">`;
+        } else {
+            fieldsHtml = `<label class="font-semibold">Title</label><input type="text" id="edit-title" class="w-full p-2 border rounded" value="${item.title || ''}"><label class="font-semibold">Description</label><textarea id="edit-description" class="w-full p-2 border rounded h-24">${item.description || ''}</textarea>`;
+        }
+        modalContent.innerHTML = `<h3 class="text-lg font-bold mb-4">${isNew ? '항목 추가' : '항목 수정'}</h3><div class="space-y-4 edit-form">${fieldsHtml}</div><div class="mt-6 text-right"><button id="edit-cancel" class="px-4 py-2 bg-gray-200 rounded mr-2">취소</button><button id="edit-save" class="px-4 py-2 bg-indigo-600 text-white rounded">저장</button></div>`;
+        document.getElementById('edit-save').onclick = () => saveEdit(section);
+        document.getElementById('edit-cancel').onclick = () => editModal.classList.add('hidden');
+        editModal.classList.remove('hidden');
+    }
+    
+    function saveEdit(section) {
+        const isNew = editIndex === null;
+        let updatedItem;
+        if (section === 'publications') {
+            updatedItem = { title: document.getElementById('edit-title').value, authors: document.getElementById('edit-authors').value, journal: document.getElementById('edit-journal').value, year: document.getElementById('edit-year').value, link_text: document.getElementById('edit-link-text').value, link_url: document.getElementById('edit-link-url').value };
+        } else {
+             updatedItem = { title: document.getElementById('edit-title').value, description: document.getElementById('edit-description').value };
+        }
+        if (isNew) {
+            if (!Array.isArray(siteData[section])) { siteData[section] = []; }
+            siteData[section].push(updatedItem);
+        } else {
+            siteData[section][editIndex] = updatedItem;
+        }
+        editModal.classList.add('hidden');
+        renderAll();
+    }
+
     loadData();
+
+    const reveals = document.querySelectorAll('.reveal');
+    function revealSections() {
+        reveals.forEach(reveal => {
+            const windowHeight = window.innerHeight;
+            const elementTop = reveal.getBoundingClientRect().top;
+            if (elementTop < windowHeight - 150) {
+                reveal.classList.add('active');
+            }
+        });
+    }
+    window.addEventListener('scroll', revealSections);
+    revealSections();
 });
-// NOTE: Due to length limits, some function bodies are abbreviated or omitted.
-// The user should insert the full, unabbreviated functions from previous correct versions.

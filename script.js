@@ -78,7 +78,6 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('[data-editable]').forEach(el => {
             const keys = el.dataset.editable.split('.');
             let temp = siteData;
-            // keys가 ['profile', 'name'] 형태라고 가정
             for (let i = 0; i < keys.length - 1; i++) {
                 temp = temp[keys[i]];
             }
@@ -133,6 +132,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function renderList(containerId, data, sectionName) {
         const container = document.getElementById(containerId);
+        // 오류 방어 코드 추가: data가 배열이 아닐 경우 빈 배열로 처리
+        if (!Array.isArray(data)) {
+            console.error(`Data for section "${sectionName}" is not an array.`, data);
+            data = [];
+        }
         container.innerHTML = data.map((item, index) => `
             <li class="flex items-start gap-2">
                 <span class="flex-grow"><span class="font-semibold">"${item.title}"</span>, ${item.description}</span>

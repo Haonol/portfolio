@@ -246,9 +246,8 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('password-input').value = '';
     });
     
-    // ===== 개선된 이벤트 핸들러 =====
     document.addEventListener('click', (e) => {
-        if (!adminMode) return; // 관리자 모드가 아니면 아무것도 안 함
+        if (!adminMode) return;
 
         const target = e.target.closest('button');
         if (!target) return;
@@ -338,7 +337,6 @@ document.addEventListener('DOMContentLoaded', () => {
         renderAll();
     }
 
-    // 초기화 및 기타 UI 스크립트
     loadData();
 
     const reveals = document.querySelectorAll('.reveal');

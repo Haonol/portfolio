@@ -17,15 +17,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 authors: "<strong>서동원</strong>, 김철수", 
                 journal: "<em>Journal of Nanotechnology</em>, 15(2), 45-58.", 
                 year: "2025", 
-                pdf_link: "#", 
-                doi_link: "#" 
+                link_text: "PDF",
+                link_url: "#"
             }, 
             { 
                 title: "AI-based Prediction of Material Tribological Properties", 
                 authors: "이영희, <strong>서동원</strong>", 
-                journal: "<em>Proceedings of the International Conference on Mechanical Engineering (ICME)</em>, Busan, South Korea.", 
+                journal: "<em>Proceedings of ICME</em>, Busan, South Korea.", 
                 year: "2024", 
-                pdf_link: "#" 
+                link_text: "DOI",
+                link_url: "#"
             }
         ],
         conferences: [
@@ -116,23 +117,50 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function renderPublications(data) {
-        const container = document.getElementById('publications-list');
-        container.innerHTML = data.map((item, index) => `
-            <div class="bg-white p-6 rounded-lg shadow-md flex items-center gap-2">
-                <div class="flex-grow">
-                    <p class="text-lg font-semibold text-gray-800">${item.title}</p>
-                    <p class="text-sm text-gray-600 mb-2">${item.authors}. (${item.year}). ${item.journal}</p>
-                </div>
-                <div class="flex flex-col gap-2">
-                    <button class="admin-only-btn edit-item-btn" data-section="publications" data-index="${index}">✏️</button>
-                    <button class="admin-only-btn delete-item-btn" data-section="publications" data-index="${index}">-</button>
-                </div>
-            </div>`).join('');
+        const table = document.getElementById('publications-table');
+        if (!table) return;
+
+        const thead = `
+            <thead>
+                <tr>
+                    <th scope="col">Title & Authors</th>
+                    <th scope="col">Journal / Conference</th>
+                    <th scope="col">Year</th>
+                    <th scope="col">Link</th>
+                    <th scope="col" class="admin-only-header" style="display: none;">Edit</th>
+                </tr>
+            </thead>`;
+
+        const tbody = `
+            <tbody>
+                ${data.map((item, index) => `
+                    <tr>
+                        <td class="align-top">
+                            <p class="font-semibold text-gray-800">${item.title}</p>
+                            <p class="text-xs text-gray-600">${item.authors}</p>
+                        </td>
+                        <td class="align-top">${item.journal}</td>
+                        <td class="align-top">${item.year}</td>
+                        <td class="align-top">
+                            ${item.link_url && item.link_text ? `<a href="${item.link_url}" target="_blank" rel="noopener noreferrer" class="publication-link">${item.link_text}</a>` : ''}
+                        </td>
+                        <td class="align-top admin-only-cell" style="display: none;">
+                            <div class="flex items-center gap-2">
+                                <button class="admin-only-btn edit-item-btn" data-section="publications" data-index="${index}">✏️</button>
+                                <button class="admin-only-btn delete-item-btn" data-section="publications" data-index="${index}">-</button>
+                            </div>
+                        </td>
+                    </tr>
+                `).join('')}
+            </tbody>`;
+
+        table.innerHTML = thead + tbody;
     }
 
     function renderList(containerId, data, sectionName) {
         const container = document.getElementById(containerId);
-        // 오류 방어 코드 추가: data가 배열이 아닐 경우 빈 배열로 처리
+        if (!container) return;
+        
         if (!Array.isArray(data)) {
             console.error(`Data for section "${sectionName}" is not an array.`, data);
             data = [];
@@ -159,7 +187,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function updateAdminUI() {
         document.querySelectorAll('[data-editable]').forEach(el => el.setAttribute('contenteditable', adminMode));
-        document.querySelectorAll('.admin-only-btn').forEach(btn => btn.style.display = adminMode ? 'inline-flex' : 'none');
+        
+        const adminElements = document.querySelectorAll('.admin-only-btn, .admin-only-header, .admin-only-cell');
+        adminElements.forEach(el => {
+            el.style.display = adminMode ? '' : 'none'; // Use '' to revert to default display
+        });
+        
         document.getElementById('edit-icon').classList.toggle('hidden', adminMode);
         document.getElementById('save-icon').classList.toggle('hidden', !adminMode);
 
@@ -247,8 +280,10 @@ document.addEventListener('DOMContentLoaded', () => {
             fieldsHtml = `
                 <label class="font-semibold">Title</label><input type="text" id="edit-title" class="w-full p-2 border rounded" value="${item.title || ''}">
                 <label class="font-semibold">Authors</label><input type="text" id="edit-authors" class="w-full p-2 border rounded" value="${item.authors || ''}">
-                <label class="font-semibold">Journal</label><input type="text" id="edit-journal" class="w-full p-2 border rounded" value="${item.journal || ''}">
+                <label class="font-semibold">Journal / Conference</label><input type="text" id="edit-journal" class="w-full p-2 border rounded" value="${item.journal || ''}">
                 <label class="font-semibold">Year</label><input type="text" id="edit-year" class="w-full p-2 border rounded" value="${item.year || ''}">
+                <label class="font-semibold">Link Text (e.g., PDF, DOI)</label><input type="text" id="edit-link-text" class="w-full p-2 border rounded" value="${item.link_text || ''}">
+                <label class="font-semibold">Link URL (주소)</label><input type="text" id="edit-link-url" class="w-full p-2 border rounded" value="${item.link_url || ''}">
             `;
         } else {
             fieldsHtml = `
@@ -280,8 +315,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 authors: document.getElementById('edit-authors').value,
                 journal: document.getElementById('edit-journal').value,
                 year: document.getElementById('edit-year').value,
-                pdf_link: (isNew ? "#" : siteData[section][editIndex].pdf_link),
-                doi_link: (isNew ? "#" : siteData[section][editIndex].doi_link)
+                link_text: document.getElementById('edit-link-text').value,
+                link_url: document.getElementById('edit-link-url').value
             };
         } else {
              updatedItem = {

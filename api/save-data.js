@@ -1,26 +1,23 @@
-import { kv } from '@vercel/kv';
-import { NextResponse } from 'next/server';
+const { kv } = require('@vercel/kv');
 
-export const config = {
-  runtime: 'edge',
-};
-
-export default async function handler(req) {
+module.exports = async (req, res) => {
   if (req.method !== 'POST') {
-    return new Response('Method Not Allowed', { status: 405 });
+    return res.status(405).json({ error: 'Method Not Allowed' });
   }
 
   try {
-    const { password, data } = await req.json();
+    // Vercel의 Node.js 런타임에서는 req.body가 자동으로 파싱됩니다.
+    const { password, data } = req.body;
     const realPassword = process.env.ADMIN_PASSWORD;
 
     if (password !== realPassword) {
-      return NextResponse.json({ error: '비밀번호가 틀렸습니다.' }, { status: 401 });
+      return res.status(401).json({ error: '비밀번호가 틀렸습니다.' });
     }
 
     await kv.set('portfolioData', data);
-    return NextResponse.json({ success: true, message: '데이터가 성공적으로 저장되었습니다.' });
+    res.status(200).json({ success: true, message: '데이터가 성공적으로 저장되었습니다.' });
   } catch (error) {
-    return NextResponse.json({ error: '데이터 저장 중 서버에서 오류가 발생했습니다.' }, { status: 500 });
+    console.error("Save-data function error:", error);
+    res.status(500).json({ error: '데이터 저장에 실패했습니다.' });
   }
-}
+};

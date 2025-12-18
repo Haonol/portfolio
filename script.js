@@ -86,18 +86,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const adminFab = document.getElementById('admin-fab');
 
     function parseMaybeString(data) {
-        let parsed = data;
-        let depth = 0;
-        while (typeof parsed === 'string' && depth < 3) {
+        if (typeof data === 'string') {
             try {
-                parsed = JSON.parse(parsed);
-                depth += 1;
+                return JSON.parse(data);
             } catch (error) {
                 console.warn('Failed to parse server data string, using defaults instead.', error);
                 return null;
             }
         }
-        return parsed;
+        return data;
     }
 
     function mergeWithDefaults(remoteData = {}) {

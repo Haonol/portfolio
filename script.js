@@ -85,8 +85,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const editModal = document.getElementById('edit-modal');
     const adminFab = document.getElementById('admin-fab');
 
+    function parseMaybeString(data) {
+        if (typeof data === 'string') {
+            try {
+                return JSON.parse(data);
+            } catch (error) {
+                console.warn('Failed to parse server data string, using defaults instead.', error);
+                return null;
+            }
+        }
+        return data;
+    }
+
     function mergeWithDefaults(remoteData = {}) {
-        const safeData = typeof remoteData === 'object' && remoteData !== null ? remoteData : {};
+        const parsed = parseMaybeString(remoteData);
+        const safeData = typeof parsed === 'object' && parsed !== null ? parsed : {};
         return {
             profile: { ...initialData.profile, ...safeData.profile },
             publications: Array.isArray(safeData.publications) ? safeData.publications : initialData.publications,
@@ -101,7 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch('/api/get-data');
             if (!response.ok) { throw new Error(`Server responded with ${response.status}`); }
             const dataFromServer = await response.json();
-            siteData = mergeWithDefaults(dataFromServer && dataFromServer.profile ? dataFromServer : initialData);
+            siteData = mergeWithDefaults(dataFromServer && (dataFromServer.profile || typeof dataFromServer === 'string') ? dataFromServer : initialData);
         } catch (error) {
             console.error("Failed to load data from server. Using initial default data.", error);
             siteData = mergeWithDefaults(initialData);

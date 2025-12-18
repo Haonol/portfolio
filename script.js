@@ -85,36 +85,50 @@ document.addEventListener('DOMContentLoaded', () => {
     const editModal = document.getElementById('edit-modal');
     const adminFab = document.getElementById('admin-fab');
 
+    function mergeWithDefaults(remoteData = {}) {
+        const safeData = typeof remoteData === 'object' && remoteData !== null ? remoteData : {};
+        return {
+            profile: { ...initialData.profile, ...safeData.profile },
+            publications: Array.isArray(safeData.publications) ? safeData.publications : initialData.publications,
+            conferences: Array.isArray(safeData.conferences) ? safeData.conferences : initialData.conferences,
+            education: Array.isArray(safeData.education) ? safeData.education : initialData.education,
+            awards: Array.isArray(safeData.awards) ? safeData.awards : initialData.awards,
+        };
+    }
+
     async function loadData() {
         try {
             const response = await fetch('/api/get-data');
             if (!response.ok) { throw new Error(`Server responded with ${response.status}`); }
             const dataFromServer = await response.json();
-            siteData = (dataFromServer && dataFromServer.profile) ? dataFromServer : initialData;
+            siteData = mergeWithDefaults(dataFromServer && dataFromServer.profile ? dataFromServer : initialData);
         } catch (error) {
             console.error("Failed to load data from server. Using initial default data.", error);
-            siteData = initialData;
+            siteData = mergeWithDefaults(initialData);
         }
         renderAll();
     }
 
     async function performSave(password) {
+        const updatedData = mergeWithDefaults(siteData);
+
         document.querySelectorAll('[data-editable]').forEach(el => {
             const keys = el.dataset.editable.split('.');
-            let temp = siteData;
+            let temp = updatedData;
             for (let i = 0; i < keys.length - 1; i++) { temp = temp[keys[i]]; }
-            let value = el.innerHTML;
+            let value = sanitizeHtml(el.innerHTML);
             if (el.dataset.editable === 'profile.research_tags') {
-                value = el.textContent.split(',').map(tag => tag.trim()).filter(Boolean).join(', ');
+                value = el.textContent.split(',').map(tag => sanitizeHtml(tag.trim())).filter(Boolean).join(', ');
             }
             temp[keys[keys.length - 1]] = value;
         });
+        siteData = updatedData;
 
         try {
             const response = await fetch('/api/save-data', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ password, data: siteData }),
+                body: JSON.stringify({ password, data: updatedData }),
             });
             const result = await response.json();
             if (response.ok) {

@@ -1,10 +1,45 @@
 @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700&display=swap');
 
+:root {
+    --brand-400: #7c3aed;
+    --brand-500: #4f46e5;
+    --brand-600: #4338ca;
+    --surface: #ffffff;
+    --muted: #6b7280;
+    --shadow-strong: 0 25px 55px rgba(79, 70, 229, 0.15);
+    --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
 body { 
     font-family: 'Pretendard', 'Inter', 'Noto Sans KR', sans-serif; 
     word-break: keep-all;
     letter-spacing: -0.02em;
-    background-color: #f8fafc;
+    background: radial-gradient(circle at 20% 20%, rgba(124, 58, 237, 0.12), transparent 30%),
+                radial-gradient(circle at 80% 0%, rgba(79, 70, 229, 0.12), transparent 25%),
+                #f8fafc;
+    color: #1f2937;
+    position: relative;
+    min-height: 100vh;
+}
+.decor-gradient {
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(circle at 10% 20%, rgba(79, 70, 229, 0.18), transparent 30%),
+                radial-gradient(circle at 80% 10%, rgba(37, 99, 235, 0.18), transparent 30%);
+    filter: blur(80px);
+    opacity: 0.65;
+    z-index: -2;
+    pointer-events: none;
+}
+.decor-grid {
+    position: fixed;
+    inset: 0;
+    background-image: linear-gradient(rgba(255,255,255,0.4) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(255,255,255,0.4) 1px, transparent 1px);
+    background-size: 120px 120px;
+    opacity: 0.35;
+    z-index: -3;
+    pointer-events: none;
 }
 .reveal { 
     opacity: 0; 
@@ -14,6 +49,19 @@ body {
 .reveal.active { 
     opacity: 1; 
     transform: translateY(0); 
+}
+section h2 {
+    position: relative;
+}
+section h2::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -10px;
+    width: 120px;
+    height: 6px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, rgba(79, 70, 229, 0.35), transparent);
 }
 [contenteditable="true"] {
     outline: 2px dashed #4f46e5;
@@ -30,6 +78,20 @@ body {
 body.admin-mode-active .admin-only-btn,
 body.admin-mode-active .admin-only-feature {
     display: flex;
+}
+.edit-hint {
+    position: sticky;
+    top: 96px;
+    z-index: 30;
+    background: #eef2ff;
+    border: 1px dashed var(--brand-500);
+    color: #312e81;
+    padding: 0.75rem 1rem;
+    border-radius: 12px;
+    box-shadow: var(--shadow-soft);
+    margin-bottom: 1.5rem;
+    align-items: center;
+    gap: 0.5rem;
 }
 .admin-only-btn {
     margin-left: 1rem;
@@ -66,6 +128,21 @@ body.admin-mode-active .admin-only-feature {
     max-width: 1024px;
     margin: 0 auto;
 }
+.profile-card {
+    border: 1px solid #eef2ff;
+    background: linear-gradient(145deg, #ffffff 0%, #f9fbff 100%);
+    position: relative;
+    overflow: hidden;
+}
+.profile-card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 20% 20%, rgba(79, 70, 229, 0.08), transparent 40%),
+                radial-gradient(circle at 80% 80%, rgba(99, 102, 241, 0.06), transparent 35%);
+    z-index: 0;
+}
+.profile-card > * { position: relative; z-index: 1; }
 .profile-image-wrapper {
     position: relative;
     border-radius: 50%;
@@ -145,6 +222,17 @@ body.admin-mode-active .admin-only-feature {
     border-color: #c7d2fe; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     transform: translateY(-4px);
 }
+.publication-card::before {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    border-radius: 0.75rem;
+    padding: 1px;
+    background: linear-gradient(135deg, rgba(79, 70, 229, 0.15), rgba(37, 99, 235, 0.08));
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    -webkit-mask-composite: destination-out;
+}
 .publication-title { font-size: 1.125rem; font-weight: 600; color: #1f2937; }
 .publication-authors { font-size: 0.875rem; color: #4b5563; }
 .publication-journal { font-size: 0.875rem; color: #6b7280; margin-top: 0.25rem; }
@@ -165,3 +253,95 @@ body.admin-mode-active .admin-only-feature {
 }
 .social-icon-link:hover { color: #4f46e5; transform: scale(1.1); }
 .social-icon-link svg { width: 1.75rem; height: 1.75rem; }
+.enhanced-icon {
+    background: #f1f5f9;
+    padding: 0.5rem;
+    border-radius: 9999px;
+    box-shadow: var(--shadow-soft);
+}
+.primary-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background: linear-gradient(135deg, var(--brand-500), var(--brand-600));
+    color: white;
+    padding: 0.75rem 1.25rem;
+    border-radius: 12px;
+    font-weight: 600;
+    box-shadow: var(--shadow-strong);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.primary-button:hover {
+    transform: translateY(-1px) scale(1.01);
+    box-shadow: 0 20px 40px rgba(67, 56, 202, 0.35);
+}
+.tag-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.4rem 0.75rem;
+    border-radius: 9999px;
+    background: #eef2ff;
+    color: #312e81;
+    font-weight: 600;
+    font-size: 0.85rem;
+    box-shadow: 0 6px 14px rgba(79, 70, 229, 0.12);
+}
+.tag-separator { display: none; }
+
+#publications-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.25rem;
+}
+
+#conferences-list, #education-list, #awards-list {
+    position: relative;
+    padding-left: 0.5rem;
+}
+
+#conferences-list::before, #education-list::before, #awards-list::before {
+    content: '';
+    position: absolute;
+    left: 10px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(180deg, rgba(79, 70, 229, 0.35), rgba(79, 70, 229, 0));
+}
+
+#conferences-list li, #education-list li, #awards-list li {
+    position: relative;
+    padding: 1rem 1.25rem 1rem 2.5rem;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 1rem;
+    margin-left: 0.75rem;
+    box-shadow: var(--shadow-soft);
+}
+
+#conferences-list li::before, #education-list li::before, #awards-list li::before {
+    content: '';
+    position: absolute;
+    left: -0.95rem;
+    top: 1.2rem;
+    width: 12px;
+    height: 12px;
+    background: radial-gradient(circle, #4f46e5 0%, #6366f1 70%);
+    border: 3px solid #eef2ff;
+    border-radius: 50%;
+    box-shadow: 0 0 0 6px rgba(79, 70, 229, 0.08);
+}
+
+#conferences-list span, #education-list span, #awards-list span {
+    font-size: 1.05rem;
+}
+
+#navbar {
+    border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+.modal-content {
+    border: 1px solid #e5e7eb;
+}
